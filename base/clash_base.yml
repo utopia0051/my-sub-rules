@@ -1,0 +1,232 @@
+# ===================================================================
+# clash_base.yml —— Clash/mihomo 基础模板（由 subconverter 注入节点与规则）
+# 重点：防 DNS 泄露的 dns 配置 + 域名嗅探 + TUN 参数
+# ===================================================================
+
+mixed-port: 7890
+allow-lan: false
+bind-address: "*"
+mode: rule
+log-level: info
+# 关闭 IPv6 可显著减小泄露面（家宽 v6 直连绕过代理是常见泄露源）
+# 如你的节点与网络对 v6 支持良好，可自行改为 true
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 168
+geox-url:
+  geoip: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+
+# 域名嗅探：fake-ip 模式下提高按域名分流的准确性
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "+.push.apple.com"
+
+# ---------------- DNS：防泄露核心 ----------------
+# 设计要点：
+# 1. fake-ip 模式：走代理的域名在本地拿到假 IP，真实解析在落地节点完成，
+#    国外域名的 DNS 请求根本不出本机 —— 这是防 DNS 泄露的第一道闸。
+# 2. 所有本地解析（国内域名、节点服务器域名）全部走加密 DoH，
+#    运营商无法看到明文 DNS。
+# 3. 刻意【不】把 stun 域名加入 fake-ip-filter —— 很多模板把 stun 放行，
+#    这正是 WebRTC 泄露真实 IP 的常见根源。
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  # 精选合并自 HenryChiao/MIHOMO_YAMLS 的 fake-ip-filter，并做了一处关键取舍：
+  # ⚠️ 刻意剔除了原列表中的 .stun.*.* 和 +.turn.twilio.com——把 STUN/TURN 放进
+  # fake-ip-filter（返回真实 IP）正是 WebRTC 泄露的常见根源，我们靠 🔒 隐私防护
+  # 分组拦截 STUN，不在 DNS 层放行。
+  # ⚠️ 不要加 "*" 通配符——它匹配所有域名，会让境外域名跳过 fake-ip 直接走
+  # default-nameserver（国内 DNS），完全绕过 nameserver-policy 的 geosite 分流，
+  # 境外 DNS 查询直接落到国内 DNS 上，是 DNS 泄露的根源。
+  fake-ip-filter:
+    # 保留域 / 局域网 / 本机
+    - "+.bogon"
+    - "+.direct"
+    - "+.example"
+    - "+.home.arpa"
+    - "+.internal"
+    - "+.invalid"
+    - "+.lan"
+    - "+.local"
+    - "+.localdomain"
+    - "+.localhost"
+    - "+.m2m"
+    - "+.test"
+    - "+.ts.net"
+    - "+.3gppnetwork.org"
+    # 开发 / DDNS / 泛域名解析服务
+    - "+.docker.io"
+    - "+.proxy.golang.org"
+    - "+.dynv6.net"
+    - "+.nip.io"
+    - "+.sslip.io"
+    - "+.oray.com"
+    - "+.orayimg.com"
+    # 路由器 / 设备面板
+    - "+.router.asus.com"
+    - "+.linksys.com"
+    - "+.linksyssmartwifi.com"
+    - "+.miwifi.com"
+    - "+.market.xiaomi.com"
+    - "heartbeat.belkin.com"
+    - "local.adguard.org"
+    # NTP / 时间同步
+    - "+.ntp.org.cn"
+    - "+.pool.ntp.org"
+    - "+.time.edu.cn"
+    - "ntp.*.com"
+    - "ntp1.*.com"
+    - "ntp2.*.com"
+    - "ntp3.*.com"
+    - "ntp4.*.com"
+    - "ntp5.*.com"
+    - "ntp6.*.com"
+    - "ntp7.*.com"
+    - "time.*.com"
+    - "time.*.apple.com"
+    - "time.*.edu.cn"
+    - "time.*.gov"
+    - "time1.*.com"
+    - "time2.*.com"
+    - "time3.*.com"
+    - "time4.*.com"
+    - "time5.*.com"
+    - "time6.*.com"
+    - "time7.*.com"
+    - "time-ios.apple.com"
+    - "time-macos.apple.com"
+    - "time1.cloud.tencent.com"
+    # 网络连通性检测
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
+    # 苹果推送与系统更新
+    - "+.push.apple.com"
+    - "mesu.apple.com"
+    - "swcdn.apple.com"
+    - "swdist.apple.com"
+    - "swdownload.apple.com"
+    - "swquery.apple.com"
+    - "swscan.apple.com"
+    # 游戏平台（联机 NAT / 下载 CDN）
+    - "*.*.xboxlive.com"
+    - "xbox.*.microsoft.com"
+    - "xbox.*.*.microsoft.com"
+    - "xnotify.xboxlive.com"
+    - "+.battle.net"
+    - "+.battlenet.com.cn"
+    - "+.cdn.nintendo.net"
+    - "+.srv.nintendo.net"
+    - "+.square-enix.com"
+    - "+.steamcontent.com"
+    - "+.wargaming.net"
+    - "+.wggames.cn"
+    - "+.wotgame.cn"
+    - "+.wowsgame.cn"
+    - "+.ffxiv.com"
+    - "+.finalfantasyxiv.com"
+    - "+.ff14.sdo.com"
+    - "ff.dorado.sdo.com"
+    - "+.gcloudcs.com"
+    - "+.gcloudsdk.com"
+    - "ps.res.netease.com"
+    - "na.b.g-tun.com"
+    - "+.kk-rays.com"
+    - "+.n0808.com"
+    # 国内服务（网易 / 招行 / 迅雷 / 在线音乐）
+    - "+.126.net"
+    - "+.cmbchina.com"
+    - "+.cmbimg.com"
+    - "+.sandai.net"
+    - "+.kuwo.cn"
+    - "+.music.163.com"
+    - "+.music.migu.cn"
+    - "+.xiami.com"
+    - "+.y.qq.com"
+    - "amobile.music.tc.qq.com"
+    - "aqqmusic.tc.qq.com"
+    - "dl.stream.qqmusic.qq.com"
+    - "isure.stream.qqmusic.qq.com"
+    - "mobileoc.music.tc.qq.com"
+    - "streamoc.music.tc.qq.com"
+    - "songsearch.kugou.com"
+    - "trackercdn.kugou.com"
+    - "music.taihe.com"
+    - "musicapi.taihe.com"
+    - "joox.com"
+    - "api.joox.com"
+    - "api-jooxtt.sanook.com"
+    # 微信 / QQ 登录回环
+    - "localhost.*.weixin.qq.com"
+    - "localhost.ptlogin2.qq.com"
+    - "localhost.sec.qq.com"
+    # 广告过滤器自身与杂项
+    - "adguardteam.github.io"
+    - "adrules.top"
+    - "anti-ad.net"
+    - "static.adtidy.org"
+    - "shark007.net"
+    - "lens.l.google.com"
+  # 引导 DNS（仅用于解析下面 DoH 服务器自身的域名，纯 IP 无需引导时保留兜底）
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  # 默认解析器：加密 DoH
+  nameserver:
+    - "https://223.5.5.5/dns-query"
+    - "https://doh.pub/dns-query"
+  # 解析代理节点服务器域名专用，防止走系统明文 DNS
+  proxy-server-nameserver:
+    - "https://223.5.5.5/dns-query"
+    - "https://doh.pub/dns-query"
+  # DNS 查询遵循分流规则出站（境外 DoH 的查询会经代理发出，国内 DoH 直连）
+  # —— 吸收自 mosdns 防泄露思路：境外域名解析绝不落在国内 DNS 上
+  respect-rules: true
+  nameserver-policy:
+    # 国内与内网域名固定走国内 DoH，又快又不出错
+    "geosite:private,cn":
+      - "https://223.5.5.5/dns-query"
+      - "https://doh.pub/dns-query"
+    # 境外域名（漏出 fake-ip 的场景）走干净 DoH，且经代理链路解析
+    "geosite:geolocation-!cn":
+      - "https://1.1.1.1/dns-query"
+      - "https://8.8.8.8/dns-query"
+
+# ---------------- TUN：接管全部流量（含 UDP）----------------
+# WebRTC/STUN 是 UDP 流量，仅开"系统代理"根本管不到它，必须开 TUN。
+# 桌面客户端（Clash Verge Rev / mihomo party 等）一般在界面上有 TUN 开关，
+# 开启后即使用下方参数；命令行用户把 enable 改为 true。
+tun:
+  enable: false
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: true
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
