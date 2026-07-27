@@ -17,7 +17,7 @@
 # │ 凡是"拦截凶猛/误杀率高"的规则（尤其去广告硬核表），一律          │
 # │ 【禁止未经用户确认就加进 config/ 里的主配置】。                  │
 # │ 这类规则见文件末尾的〔需用户确认才可入主配置〕清单——它们        │
-# │ 只允许留在 config/adblock.ini（独立可选）或备镜像里，           │
+# │ 只允许留在 config/sub-rules-adblock.ini（独立可选）或备镜像里，           │
 # │ 不得进 sub-rules / basic / shadowrocket / openclash。          │
 # └───────────────────────────────────────────────────────────────┘
 # ===================================================================
@@ -59,8 +59,8 @@ AI-VPSDance.list	https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/
 # 下列镜像同步脚本会照常下载备着（防跑路），但【默认不被任何主配置
 # 引用】。AGENT 注意：未经用户明确同意，禁止把它们 wire 进
 # config/ 下任何主配置（sub-rules / basic / shadowrocket / openclash）。
-# 它们目前仅允许出现在 config/adblock.ini（独立可选的硬核去广告配置）。
-# 用户想启用时，要么用 adblock.ini，要么明确说"把 X 加进主配置"。
+# 它们目前仅允许出现在 config/sub-rules-adblock.ini（独立可选的硬核去广告配置）。
+# 用户想启用时，要么用 sub-rules-adblock.ini，要么明确说"把 X 加进主配置"。
 # 不想要某个大文件（如 AdRules 6MB）时，删掉对应行即可。
 # ===============================================================
 AdRules.list	https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules.list

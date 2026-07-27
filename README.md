@@ -13,7 +13,7 @@ subconverter 远程配置 ×2 + Clash/mihomo 基础模板。相比旧版 [utopia
 config/sub-rules.ini      Clash 完整版：机场/自建双组 + AI/流媒体/Telegram/广告/隐私分组
 config/basic.ini          Clash 精简版：单组直出（对标旧 Basic/basic.ini），同样防泄露
 config/shadowrocket.ini   Shadowrocket 专用（iOS）：同分组、STUN 端口内联、DoH 防泄露
-config/adblock.ini        【可选/备用】硬核去广告版：= sub-rules.ini + Cats-Team AdRules
+config/sub-rules-adblock.ini        【可选/备用】硬核去广告版：= sub-rules.ini + Cats-Team AdRules
 config/openclash.ini      软路由精简版：geosite/geoip 替代大表、手动选节点、防泄露完整
 base/clash_base.yml       Clash/mihomo 基础模板（DNS 防泄露、sniffer、TUN 参数）
 base/shadowrocket.conf    Shadowrocket 基础模板（Surge 格式，DoH + 关 IPv6）
@@ -142,16 +142,16 @@ OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
 
 **副作用**：拦 STUN 可能影响视频会议/语音（Meet、Discord、微信语音等）。会议连不上时把 `🔒 隐私防护` 切到节点组或 DIRECT，或在 `custom-direct.list` 里只为特定会议域名加白。
 
-## 可选：硬核去广告配置 config/adblock.ini
+## 可选：硬核去广告配置 config/sub-rules-adblock.ini
 
-平时用 `sub-rules.ini` 就够了（已有 AdvertisingLite + BanProgramAD + Hijacking 三层去广告）。如果哪天想要更狠的去广告，把前端远程配置换成 `config/adblock.ini` 即可——它就是完整版**多引用了一个** [Cats-Team/AdRules](https://github.com/Cats-Team/AdRules)（约 17 万条，中文区最激进的去广告规则之一），其余分组/防泄露/节点逻辑与 `sub-rules.ini` 完全一致。
+平时用 `sub-rules.ini` 就够了（已有 AdvertisingLite + BanProgramAD + Hijacking 三层去广告）。如果哪天想要更狠的去广告，把前端远程配置换成 `config/sub-rules-adblock.ini` 即可——它就是完整版**多引用了一个** [Cats-Team/AdRules](https://github.com/Cats-Team/AdRules)（约 17 万条，中文区最激进的去广告规则之一），其余分组/防泄露/节点逻辑与 `sub-rules.ini` 完全一致。
 
-- 远程配置：`https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/adblock.ini`
+- 远程配置：`https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/sub-rules-adblock.ini`
 - 代价：规则体量大（AdRules 约 6MB，内联后配置更大、mihomo 内存占用略高）、误杀率比 Lite 版高。被误杀的域名加进 `custom-direct.list` 放行即可。
 - AdRules 已登记进 MANIFEST 的"可选镜像"区，首次同步会一并下载备好（防跑路）；主配置 `sub-rules.ini` **不引用**它，不受影响。
-- 维护：`adblock.ini` 是 `sub-rules.ini` 的派生版（唯一区别是多一行 AdRules 引用）；主配置改动后如需同步，让 agent 重新生成即可。
+- 维护：`sub-rules-adblock.ini` 是 `sub-rules.ini` 的派生版（唯一区别是多一行 AdRules 引用）；主配置改动后如需同步，让 agent 重新生成即可。
 
-> 🚧 **规则更新护栏（给未来的 agent 和我自己）**：凡是"拦截凶猛 / 误杀率高"的规则（AdRules 这类硬核去广告是典型），**必须经用户明确确认才能加进 `config/` 下的主配置**（sub-rules / basic / shadowrocket / openclash）。日常"更新规则镜像"只是刷新已登记镜像的内容，**绝不允许顺手把这类规则塞进主配置**。它们的正确归宿是独立的 `config/adblock.ini` 或 MANIFEST 的〔需用户确认〕清单。完整清单见 `rules/mirror/MANIFEST.txt` 末尾。
+> 🚧 **规则更新护栏（给未来的 agent 和我自己）**：凡是"拦截凶猛 / 误杀率高"的规则（AdRules 这类硬核去广告是典型），**必须经用户明确确认才能加进 `config/` 下的主配置**（sub-rules / basic / shadowrocket / openclash）。日常"更新规则镜像"只是刷新已登记镜像的内容，**绝不允许顺手把这类规则塞进主配置**。它们的正确归宿是独立的 `config/sub-rules-adblock.ini` 或 MANIFEST 的〔需用户确认〕清单。完整清单见 `rules/mirror/MANIFEST.txt` 末尾。
 
 ## 自定义规则维护
 
