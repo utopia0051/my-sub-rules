@@ -39,6 +39,8 @@ scripts/sync-mirror.ps1   镜像同步脚本（Windows 一键版）
 
 > ⚠️ **首次使用前必须先填充镜像**：仓库上传后立刻跑一次同步脚本（`python scripts/sync-mirror.py`，走代理时先设 `HTTPS_PROXY`），把 MANIFEST.txt 里登记的社区规则全部下载进 `rules/mirror/` 并提交推送——否则 ini 里的镜像链接是 404，转换会缺规则。以后想更新，对 Claude 说一句"按 MANIFEST 更新规则镜像"即可。
 
+说明：6 个走代理的服务分组默认跟随「🔀 节点选择」总开关——在客户端切换「🔀 节点选择」一处，即可全局切换 机场↔自建；也能进单个服务组单独指定。已去掉自动测速组，节点保持订阅原始顺序（客户端若按延迟排序请关掉）。
+
 三份配置共用同一套节点分组（机场/自建）和规则源，按客户端选一份即可：Clash 内核（桌面 Clash Verge / mihomo party / 软路由 OpenClash 通用）用 `sub-rules.ini`，想要极简用 `basic.ini`，iOS 上的 Shadowrocket 用 `shadowrocket.ini`。
 
 ## 节点分组机制
@@ -78,15 +80,16 @@ raw 访问不稳可用 jsDelivr 加速：`https://cdn.jsdelivr.net/gh/utopia0051
 |---|---|---|
 | ✈️ 机场订阅 | — | 机场节点池（按名字关键字筛选） |
 | 🚀 遵纪守法小组 | — | 自建节点池（关键字取反） |
-| 🌍 国外网站 | 机场订阅 | 国外通用流量总开关（原 Proxies 的切换职责，但不再混入散节点） |
-| 🤖 AI 服务 | 机场订阅 | OpenAI/Claude/Gemini/Copilot；建议手动固定落地干净的那组 |
-| 🍎 Apple | 机场订阅 | App Store/Apple ID/iCloud/媒体商店——**美区 ID 手动选美国节点**；push/时间/系统更新仍直连 |
-| 📺 流媒体 | 机场订阅 | YouTube/Netflix/Disney+/HBO/巴哈姆特等合集 |
-| 📲 Telegram | 机场订阅 | 含 IP 段与进程规则 |
+| 🔀 节点选择 | 机场订阅 | **一键总开关**：切它=全局切换 机场↔自建；下方服务组默认跟随 |
+| 🌍 国外网站 | 🔀 节点选择 | 国外通用流量总开关（原 Proxies 的切换职责，但不再混入散节点） |
+| 🤖 AI 服务 | 🔀 节点选择 | OpenAI/Claude/Gemini/Copilot；建议手动固定落地干净的那组 |
+| 🍎 Apple | 🔀 节点选择 | App Store/Apple ID/iCloud/媒体商店——**美区 ID 手动选美国节点**；push/时间/系统更新仍直连 |
+| 📺 流媒体 | 🔀 节点选择 | YouTube/Netflix/Disney+/HBO/巴哈姆特等合集 |
+| 📲 Telegram | 🔀 节点选择 | 含 IP 段与进程规则 |
 | 🔒 隐私防护 | REJECT | STUN/WebRTC 拦截，见防泄露说明 |
 | 🛑 广告拦截 | REJECT | AdvertisingLite + 你的 YY 屏蔽包 |
 | 🎯 全球直连 | DIRECT | 局域网/个人直连/国内域名/国内 IP |
-| 🐟 漏网之鱼 | 机场订阅 | 未匹配流量兜底 |
+| 🐟 漏网之鱼 | 🔀 节点选择 | 未匹配流量兜底 |
 
 规则优先级（自上而下）：局域网 → **个人自定义（直连/代理/屏蔽）** → STUN 防护 → AI → 广告拦截 → Telegram → 流媒体 → 国外合集 → 国内直连 → GEOIP CN → 兜底。个人规则永远最先匹配，社区规则误杀/漏杀都能在 `rules/` 里一票否决。
 
