@@ -1,0 +1,22 @@
+# ===================================================================
+# custom-proxy.list —— 个人强制代理规则（完整版绑定：🌍 国外网站；精简版绑定：🚀 遵纪守法小组）
+# 优先级高于所有社区规则：想强制走代理的域名加在这里。
+# 一行一条 Clash classical 规则，# 开头为注释。
+# ===================================================================
+
+# --- 迁移自旧配置 ---
+DOMAIN-SUFFIX,dpdns.org
+DOMAIN,www.blizzard.com
+DOMAIN,us.battle.net
+DOMAIN-KEYWORD,scholar
+
+# --- ProtonMail 隐私邮箱（参考 lyq2010/clash-ruleset） ---
+DOMAIN-SUFFIX,proton.me
+DOMAIN-SUFFIX,protonmail.com
+DOMAIN-SUFFIX,protonmail.ch
+DOMAIN-SUFFIX,pm.me
+DOMAIN-SUFFIX,protonstatus.com
+
+# ---- 示例，按需取消注释 ----
+# DOMAIN-SUFFIX,example.com
+# IP-CIDR,203.0.113.0/24,no-resolve

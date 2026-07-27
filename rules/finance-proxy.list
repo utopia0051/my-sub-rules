@@ -1,0 +1,84 @@
+# ===================================================================
+# finance-proxy.list —— 港美股券商 + 加密交易所（走代理）
+# 绑定分组：🌍 国外网站（完整版/SR）、🚀 遵纪守法小组（精简版）
+# 参考 ZheLaVie/Meta-Rules-Patch，已清洗掉通用 SDK/证书/STUN 混入域名
+# ===================================================================
+# --- 富途 FUTU / moomoo ---
+DOMAIN-SUFFIX,api.futunn.com
+DOMAIN-SUFFIX,futu.cn
+DOMAIN-SUFFIX,futu.com
+DOMAIN-SUFFIX,futu.link
+DOMAIN-SUFFIX,futu0.com
+DOMAIN-SUFFIX,futu1.com
+DOMAIN-SUFFIX,futu2.com
+DOMAIN-SUFFIX,futu3.com
+DOMAIN-SUFFIX,futu4.com
+DOMAIN-SUFFIX,futu5.com
+DOMAIN-SUFFIX,futu6.com
+DOMAIN-SUFFIX,futu7.com
+DOMAIN-SUFFIX,futu8.com
+DOMAIN-SUFFIX,futu9.com
+DOMAIN-SUFFIX,futuau.com
+DOMAIN-SUFFIX,futubull.cn
+DOMAIN-SUFFIX,futuchain.com
+DOMAIN-SUFFIX,futuesop.com
+DOMAIN-SUFFIX,futufin.com
+DOMAIN-SUFFIX,futuhk.com
+DOMAIN-SUFFIX,futuhk1.com
+DOMAIN-SUFFIX,futuhk2.com
+DOMAIN-SUFFIX,futuhkapp.com
+DOMAIN-SUFFIX,futuhn.com
+DOMAIN-SUFFIX,futuholdings.com
+DOMAIN-SUFFIX,futuinc.com
+DOMAIN-SUFFIX,futuniuniu.com
+DOMAIN-SUFFIX,futunn.com
+DOMAIN-SUFFIX,futuoa.com
+DOMAIN-SUFFIX,futusg.com
+DOMAIN-SUFFIX,futustatic.com
+DOMAIN-SUFFIX,fututrade.com
+DOMAIN-SUFFIX,fututrustee.com
+DOMAIN-SUFFIX,moomoo.com
+DOMAIN-SUFFIX,moomoobull.com
+DOMAIN-SUFFIX,moomooequity.com
+DOMAIN-SUFFIX,moomootrustee.com
+
+# --- 华盛 uSMART ---
+DOMAIN-SUFFIX,usmart.hk
+DOMAIN-SUFFIX,usmartsg.com
+DOMAIN-SUFFIX,yxzq.com
+
+# --- 币安 Binance（含防封马甲域名） ---
+DOMAIN-SUFFIX,binance.cc
+DOMAIN-SUFFIX,binance.charity
+DOMAIN-SUFFIX,binance.cloud
+DOMAIN-SUFFIX,binance.co
+DOMAIN-SUFFIX,binance.com
+DOMAIN-SUFFIX,binance.info
+DOMAIN-SUFFIX,binance.me
+DOMAIN-SUFFIX,binance.net
+DOMAIN-SUFFIX,binance.org
+DOMAIN-SUFFIX,binance.us
+DOMAIN-SUFFIX,binance.vision
+DOMAIN-SUFFIX,binanceapi.com
+DOMAIN-SUFFIX,binancecnt.com
+DOMAIN-SUFFIX,binanceru.net
+DOMAIN-SUFFIX,binancezh.com
+DOMAIN-SUFFIX,binancezh.net
+DOMAIN-SUFFIX,binancezh.pro
+DOMAIN-SUFFIX,bnbchain.org
+DOMAIN-SUFFIX,bnbstatic.com
+DOMAIN-SUFFIX,saasexch.com
+DOMAIN-SUFFIX,saasexch.io
+DOMAIN-SUFFIX,nftstatic.com
+
+# --- Gate.io ---
+DOMAIN-SUFFIX,gate.io
+DOMAIN-SUFFIX,gate.com
+DOMAIN-SUFFIX,gate.us
+DOMAIN-SUFFIX,gateio.live
+DOMAIN-SUFFIX,gateio.services
+DOMAIN-SUFFIX,gateio.im
+DOMAIN-SUFFIX,gatedata.org
+DOMAIN-SUFFIX,gateimg.com
+DOMAIN-SUFFIX,web3gate.io
+DOMAIN-SUFFIX,walletconnect.org

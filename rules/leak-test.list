@@ -1,0 +1,44 @@
+# ===================================================================
+# leak-test.list —— IP/DNS/WebRTC 泄露检测站 + IP 查询接口（强制走代理）
+# 绑定分组：🌍 国外网站（完整版/SR）、🚀 遵纪守法小组（精简版）
+# 用途：测试防泄露时让这些站统一走节点出口，看到一致的节点 IP、不暴露真实 IP。
+# 整理自 cmliu/ACL4SSR 的 CoaxTheKid.list，已剔除其中的 STUN 服务器条目
+# （STUN 由 🔒 隐私防护分组 REJECT，不在此走代理，避免与防 WebRTC 泄露冲突）。
+# ===================================================================
+
+# --- 泄露/指纹检测站 ---
+DOMAIN-SUFFIX,browserleaks.com
+DOMAIN-SUFFIX,browserleaks.org
+DOMAIN-SUFFIX,browserleaks.net
+DOMAIN-SUFFIX,ipleak.net
+DOMAIN-SUFFIX,dnsleaktest.com
+DOMAIN-SUFFIX,dnsleaktest.org
+DOMAIN-SUFFIX,dnscheck.tools
+DOMAIN-SUFFIX,whoer.net
+DOMAIN-SUFFIX,whoer.com
+DOMAIN-SUFFIX,browserscan.net
+DOMAIN-SUFFIX,ippure.com
+DOMAIN-SUFFIX,test-ipv6.com
+DOMAIN-SUFFIX,ipcheck.im
+DOMAIN-SUFFIX,ip-score.com
+
+# --- IP 查询接口 ---
+DOMAIN-SUFFIX,icanhazip.com
+DOMAIN-SUFFIX,ping0.cc
+DOMAIN-SUFFIX,ipapi.co
+DOMAIN-SUFFIX,ip-api.com
+DOMAIN-SUFFIX,ipinfo.io
+DOMAIN-SUFFIX,ifconfig.me
+DOMAIN-SUFFIX,ip.sb
+DOMAIN-SUFFIX,ipify.org
+DOMAIN-SUFFIX,whatismyip.com
+DOMAIN-SUFFIX,whatismyip.com.tw
+DOMAIN-SUFFIX,whoisip.me
+DOMAIN-SUFFIX,ipaddress.me
+DOMAIN-SUFFIX,jsonp-ip.com
+
+# --- VPN/代理风险检测 ---
+DOMAIN-SUFFIX,vpnapi.io
+DOMAIN-SUFFIX,ip2proxy.com
+DOMAIN-SUFFIX,incolumitas.com
+DOMAIN-SUFFIX,addr.tools

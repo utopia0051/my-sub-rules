@@ -1,0 +1,30 @@
+# ===================================================================
+# apple-proxy.list —— Apple 分区敏感服务（走 🍎 Apple 组，美区 ID 建议选美国节点）
+# 绑定分组：🍎 Apple
+# 只放"按账户地区走"的服务：App Store / Apple ID 登录 / iCloud / 媒体商店。
+# 通用不分区服务（推送 push、时间、系统更新、证书 OCSP）不在此，保持直连。
+# ⚠️ 用美区服务时把 🍎 Apple 组手动切到美国节点；临时用国区服务可切回 DIRECT。
+# ===================================================================
+
+# --- App Store / iTunes / 媒体商店 ---
+DOMAIN,apps.apple.com
+DOMAIN,itunes.apple.com
+DOMAIN-SUFFIX,mzstatic.com
+DOMAIN-SUFFIX,itunes.apple.com
+DOMAIN-SUFFIX,apps.apple.com
+
+# --- Apple ID 登录（美区 ID 走美国节点，保持地区一致、少触发验证） ---
+DOMAIN-SUFFIX,appleid.apple.com
+DOMAIN-SUFFIX,idmsa.apple.com
+DOMAIN-SUFFIX,gsa.apple.com
+DOMAIN-SUFFIX,appleid.cdn-apple.com
+
+# --- iCloud（美区账户数据同步走美国节点更一致） ---
+DOMAIN-SUFFIX,icloud.com
+DOMAIN-SUFFIX,icloud-content.com
+DOMAIN-SUFFIX,cdn-apple.com
+
+# --- Apple 流媒体/订阅（美区专属内容需走美国节点） ---
+DOMAIN-SUFFIX,tv.apple.com
+DOMAIN-SUFFIX,music.apple.com
+DOMAIN-SUFFIX,books.apple.com

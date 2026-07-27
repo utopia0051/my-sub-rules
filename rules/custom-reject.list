@@ -1,0 +1,32 @@
+# ===================================================================
+# custom-reject.list —— 个人屏蔽规则（绑定分组：🛑 广告拦截，默认 REJECT）
+# 从旧 nexitally.ini 内联规则完整迁移：YY 语音全家桶广告/推送/统计屏蔽包。
+# 一行一条 Clash classical 规则，# 开头为注释。
+# ===================================================================
+
+# --- YY 广告与推送屏蔽（迁移自旧配置） ---
+DOMAIN-SUFFIX,ad.yy.com
+DOMAIN-SUFFIX,sd.yy.com
+DOMAIN-SUFFIX,gh.yy.com
+DOMAIN-SUFFIX,game.yy.com
+DOMAIN-SUFFIX,bigda.com
+DOMAIN-SUFFIX,yypush.com
+DOMAIN,httpdns.gslb.yy.com
+DOMAIN,bskyb.yy.com
+DOMAIN,minicard.yy.com
+DOMAIN,pm-honor.yy.com
+DOMAIN,game-market.yystatic.com
+DOMAIN,dracoapi.yy.com
+DOMAIN-SUFFIX,clientad.yy.com
+DOMAIN-SUFFIX,clientad.bs2cdn.yy.com
+DOMAIN,public-msg-bubble.yy.com
+DOMAIN,web-template.yy.com
+DOMAIN,pcyy-smallgame-tab.yy.com
+DOMAIN,newreddot.yy.com
+DOMAIN,tab2.yyembed.yy.com
+DOMAIN,message-game.yy.com
+DOMAIN,ext.yyembed.yy.com
+DOMAIN,zbaseyschimg.bs2dl.yy.com
+DOMAIN,yystatic.bs2cdn.yy.com
+DOMAIN,ap-ipv6.yy.com
+DOMAIN-KEYWORD,ipv6.yy.com

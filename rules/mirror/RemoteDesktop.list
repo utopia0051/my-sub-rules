@@ -1,0 +1,27 @@
+# ===== MIRRORED RULE (auto-generated header) =====
+# Upstream: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/RemoteDesktop.list
+# Upstream repo: ACL4SSR/ACL4SSR
+# Synced: 2026-07-27 07:07:21 -0700
+# Update: python scripts/sync-mirror.py  (或让 Claude/agent 执行)
+# =================================================
+# 内容：远程桌面软件
+# 数量：9条
+
+#Windows-Oray
+PROCESS-NAME,devcon.exe
+PROCESS-NAME,DriverInstaller.exe
+PROCESS-NAME,CrashReport.exe
+PROCESS-NAME,SunloginClient.exe
+
+#Windows-ToDesk
+PROCESS-NAME,ToDesk_Setup.exe
+PROCESS-NAME,ToDesk_Session.exe
+PROCESS-NAME,ToDesk_Service.exe
+PROCESS-NAME,ToDesk.exe
+
+#Windows-System
+PROCESS-NAME,mstsc.exe
+
+#MacOS
+
+#Linux

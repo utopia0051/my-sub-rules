@@ -1,0 +1,31 @@
+# ===================================================================
+# finance-direct.list —— 境外银行（走直连）
+# 绑定分组：🎯 全球直连
+# 银行网站境内直连更安全、少触发风控；参考 ZheLaVie/Meta-Rules-Patch（已清洗）
+# ===================================================================
+# --- 汇丰 HSBC ---
+DOMAIN-SUFFIX,hsbc.com
+DOMAIN-SUFFIX,hsbc.com.hk
+DOMAIN-SUFFIX,hsbc.com.cn
+DOMAIN-SUFFIX,hsbc.com.sg
+DOMAIN-SUFFIX,hsbc.com.au
+DOMAIN-SUFFIX,hsbc.com.tw
+DOMAIN-SUFFIX,hsbc.co.uk
+DOMAIN-SUFFIX,hsbc.co.jp
+DOMAIN-SUFFIX,hsbc.ca
+DOMAIN-SUFFIX,hsbc.net
+DOMAIN-SUFFIX,hsbc.uk
+DOMAIN-SUFFIX,hsbc.de
+DOMAIN-SUFFIX,hsbc.fr
+DOMAIN-SUFFIX,hsbcnet.com
+DOMAIN-SUFFIX,hsbcprivatebank.com
+DOMAIN-SUFFIX,hsbcinnovationbanking.com
+DOMAIN-SUFFIX,hsbcinsurance.com.cn
+DOMAIN-SUFFIX,hsbcqh.com.cn
+DOMAIN-SUFFIX,etnet.com.hk
+
+# --- 众安银行 ZA Bank ---
+DOMAIN-SUFFIX,za.bank
+DOMAIN-SUFFIX,zabank.com.hk
+DOMAIN-SUFFIX,za.group
+DOMAIN-SUFFIX,zafintech.com

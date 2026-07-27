@@ -1,0 +1,13 @@
+# ===================================================================
+# ai-misc.list —— 其他 AI 服务（OpenAI/Claude 之外的补充）
+# 绑定分组：🤖 AI 服务（完整版/SR 版）、🚀 遵纪守法小组（精简版）
+# 以后新出的 AI 服务域名都往这里加，保持 AI 流量统一由 AI 分组调度
+# ===================================================================
+
+# Perplexity（参考 zhuziyi1989/tools 整理）
+DOMAIN-SUFFIX,perplexity.ai
+DOMAIN-SUFFIX,pplx.ai
+
+# Civitai（AI 绘画模型社区）、Cici（字节豆包海外版）—— 参考 cmliu/ACL4SSR
+DOMAIN-SUFFIX,civitai.com
+DOMAIN-SUFFIX,ciciai.com

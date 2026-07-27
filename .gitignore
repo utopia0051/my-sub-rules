@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+_src.zip
+_tmp/
+

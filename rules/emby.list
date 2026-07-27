@@ -1,0 +1,20 @@
+# ===================================================================
+# emby.list —— Emby 影音服务（走代理）
+# 绑定分组：🌍 国外网站（完整版/SR）、🚀 遵纪守法小组（精简版）
+# 参考 ZheLaVie/Meta-Rules-Patch 的 emby 列表（含你的 nijigem.by）
+# ⚠️ Emby 常需固定出口节点：建议把 🌍 国外网站 手动固定到能稳定访问的那个节点，
+#    或按需在 custom-proxy.list 里为自建 Emby 单独指定。
+# ===================================================================
+
+DOMAIN-SUFFIX,nijigem.by
+DOMAIN-SUFFIX,okemby.org
+DOMAIN-SUFFIX,olehdtv.com
+DOMAIN-SUFFIX,olelive.com
+DOMAIN-SUFFIX,olemovienews.com
+DOMAIN-SUFFIX,cineby.app
+DOMAIN-SUFFIX,cineby.at
+DOMAIN-SUFFIX,cineby.sc
+DOMAIN-SUFFIX,bangumi.ca
+DOMAIN-SUFFIX,ichinosekotomi.com
+DOMAIN-SUFFIX,hohai.eu.org
+DOMAIN-SUFFIX,191920.xyz

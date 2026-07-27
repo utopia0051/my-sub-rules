@@ -1,0 +1,44 @@
+# ===================================================================
+# claude-code.list —— Claude / Claude Code 完整域名分流
+# 绑定分组：🤖 AI 服务（完整版/SR 版）、🚀 遵纪守法小组（精简版）
+# 来源整理自 ip.net.coffee/claude/site.html + Anthropic 官方域名
+# 覆盖：主站/API、CDN、认证、遥测上报、第三方支持服务、Anthropic IP 段
+# （blackmatrix7 的 Claude.list 只有 3 条且缺 claude.com，此文件为完整补充）
+# ===================================================================
+
+# --- 核心域名 ---
+DOMAIN-SUFFIX,anthropic.com
+DOMAIN-SUFFIX,claude.ai
+DOMAIN-SUFFIX,claude.com
+DOMAIN-SUFFIX,clau.de
+DOMAIN-SUFFIX,claudeusercontent.com
+DOMAIN-SUFFIX,claudemcpclient.com
+DOMAIN-SUFFIX,claudemcpcontent.com
+
+# --- CDN / 基础设施 ---
+DOMAIN,anthropic.com.cdn.cloudflare.net
+DOMAIN,servd-anthropic-website.b-cdn.net
+
+# --- 认证 / 内容（精确匹配，避免放大到整个 auth0/ghost 平台） ---
+DOMAIN,anthropic.auth0.com
+DOMAIN,anthropic-com.ghost.io
+
+# --- 遥测与监控上报（Claude Code 启动与运行要访问） ---
+DOMAIN-SUFFIX,sentry.io
+DOMAIN-SUFFIX,statsigapi.net
+DOMAIN-SUFFIX,browser-intake-us5-datadoghq.com
+DOMAIN,cdn.usefathom.com
+
+# --- 第三方支持服务（claude.ai 站内客服等） ---
+DOMAIN-SUFFIX,intercom.io
+DOMAIN-SUFFIX,intercomcdn.com
+
+# --- Anthropic 自有 IP 段（即 AS399358 的公告段） ---
+IP-CIDR,160.79.104.0/21,no-resolve
+IP-CIDR6,2607:6bc0::/32,no-resolve
+
+# 说明：
+# 1. 原页面还建议 DOMAIN-KEYWORD 匹配 datadog/sentry/sift——关键字太宽容易误伤，
+#    上面的精确后缀已覆盖 Claude 实际用到的上报端点，故不采用关键字。
+# 2. IP-ASN,399358 规则老版转换器会丢弃，上面的 IP-CIDR 即该 ASN 的公告段，等效。
+# 3. NTP 时间同步已在 custom-direct.list 里直连放行（DST-PORT,123 + ntp 域名）。

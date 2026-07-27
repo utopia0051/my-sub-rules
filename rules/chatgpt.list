@@ -1,0 +1,39 @@
+# ===================================================================
+# chatgpt.list —— OpenAI / ChatGPT 完整域名分流
+# 绑定分组：🤖 AI 服务（完整版/SR 版）、🚀 遵纪守法小组（精简版）
+# 来源整理自 ip.net.coffee/gpt/site.html
+# 与 blackmatrix7 OpenAI.list（2025-06 停更）并行挂载：本文件补齐其缺失的
+# 新域名（sora.com / chat.com / crixet.com 等），重复条目无害（同组去向一致）
+# ===================================================================
+
+# --- 核心域名 ---
+DOMAIN-SUFFIX,openai.com
+DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,chat.com
+DOMAIN-SUFFIX,sora.com
+DOMAIN-SUFFIX,oaistatic.com
+DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,crixet.com
+
+# --- CDN / 后端基础设施（完整主机名，精确匹配） ---
+DOMAIN,openai.com.cdn.cloudflare.net
+DOMAIN,openaicom.imgix.net
+DOMAIN,openaiapi-site.azureedge.net
+DOMAIN,production-openaicom-storage.azureedge.net
+DOMAIN,openaicomproductionae4b.blob.core.windows.net
+DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net
+# ChatGPT 实时语音用的 Azure WebPubSub（按应用分随机子域，用后缀）
+DOMAIN-SUFFIX,webpubsub.azure.com
+
+# --- 人机验证（arkoselabs 服务很多家，只放行 OpenAI 相关端点） ---
+DOMAIN,client-api.arkoselabs.com
+DOMAIN,openai-api.arkoselabs.com
+
+# --- 语音/实时音频（LiveKit，带地区分片子域，用后缀） ---
+DOMAIN-SUFFIX,chatgpt.livekit.cloud
+DOMAIN-SUFFIX,host.livekit.cloud
+DOMAIN-SUFFIX,turn.livekit.cloud
+
+# --- 遥测上报 ---
+DOMAIN,o33249.ingest.sentry.io
+DOMAIN-SUFFIX,browser-intake-datadoghq.com

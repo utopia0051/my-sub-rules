@@ -1,0 +1,66 @@
+# ===================================================================
+# MIRROR MANIFEST —— 社区规则镜像清单
+#
+# 本目录下的 .list 文件是上游社区规则在本仓库的镜像副本。
+# 每行格式：  本地文件名 <TAB> 上游 raw URL
+# 更新方式（任选其一）：
+#   1. 让 Claude/agent 执行：python scripts/sync-mirror.py
+#   2. Windows 双击/右键运行：scripts/sync-mirror.ps1
+#   3. 手动：按下表逐个下载覆盖
+# 同步脚本会自动在每个镜像文件头部写入上游仓库、地址和同步时间。
+# 支持多上游：新增镜像时把"文件名 <TAB> 上游 raw URL"追加一行即可，
+# 来源仓库由脚本从 URL 自动识别。
+#
+# ┌───────────────────────────────────────────────────────────────┐
+# │ ⚠️ AGENT 护栏（更新规则时必读）                                  │
+# │ sync-mirror 只是"刷新已登记镜像的内容"，绝不改动任何配置引用。    │
+# │ 凡是"拦截凶猛/误杀率高"的规则（尤其去广告硬核表），一律          │
+# │ 【禁止未经用户确认就加进 config/ 里的主配置】。                  │
+# │ 这类规则见文件末尾的〔需用户确认才可入主配置〕清单——它们        │
+# │ 只允许留在 config/adblock.ini（独立可选）或备镜像里，           │
+# │ 不得进 sub-rules / basic / shadowrocket / openclash。          │
+# └───────────────────────────────────────────────────────────────┘
+# ===================================================================
+Lan.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.list
+OpenAI.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list
+Claude.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.list
+Gemini.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.list
+Copilot.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.list
+AdvertisingLite.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AdvertisingLite/AdvertisingLite.list
+Telegram.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list
+GlobalMedia.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.list
+Global.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global.list
+China.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.list
+STUN.list	https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/STUN/STUN.list
+NTP-Service.list	https://raw.githubusercontent.com/LM-Firefly/Rules/master/Special/NTP-Service.list
+DMCA-Sensitive.list	https://raw.githubusercontent.com/LM-Firefly/Rules/master/Special/DMCA-Sensitive.list
+TeamViewer-CIDR.list	https://raw.githubusercontent.com/LM-Firefly/Rules/master/Special/TeamViewer-CIDR.list
+Applications.list	https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt
+UnBan.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/UnBan.list
+NaSDDNS.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/NaSDDNS.list
+PrivateTracker.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/PrivateTracker.list
+RemoteDesktop.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/RemoteDesktop.list
+SteamCN.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/SteamCN.list
+ACL4SSR-AI.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/AI.list
+BanProgramAD.list	https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list
+BlockHttpDNS.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/BlockHttpDNSPlus/BlockHttpDNSPlus_No_Resolve.yaml
+Hijacking.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/HijackingPlus/HijackingPlus_No_Resolve.yaml
+Gemini-Plus.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/Gemini/Gemini_No_Resolve.yaml
+Copilot-Plus.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/Copilot/Copilot_No_Resolve.yaml
+AppleAI.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/AppleAI/AppleAI_No_Resolve.yaml
+Grok.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/Grok/Grok_No_Resolve.yaml
+RustDesk.list	https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/RustDesk/RustDesk_No_Resolve.yaml
+CFnat.list	https://raw.githubusercontent.com/cmliu/ACL4SSR/main/Clash/CFnat.list
+AI-VPSDance.list	https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/rules/clash/all.yaml
+
+# ===============================================================
+# 〔需用户确认才可入主配置〕—— 拦截凶猛 / 误杀率高的规则
+# ---------------------------------------------------------------
+# 下列镜像同步脚本会照常下载备着（防跑路），但【默认不被任何主配置
+# 引用】。AGENT 注意：未经用户明确同意，禁止把它们 wire 进
+# config/ 下任何主配置（sub-rules / basic / shadowrocket / openclash）。
+# 它们目前仅允许出现在 config/adblock.ini（独立可选的硬核去广告配置）。
+# 用户想启用时，要么用 adblock.ini，要么明确说"把 X 加进主配置"。
+# 不想要某个大文件（如 AdRules 6MB）时，删掉对应行即可。
+# ===============================================================
+AdRules.list	https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules.list

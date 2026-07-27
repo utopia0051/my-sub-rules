@@ -1,0 +1,16 @@
+# ===================================================================
+# docker.list —— Docker（走代理，拉镜像更稳）
+# 绑定分组：🌍 国外网站（完整版/SR/软路由）、🚀 遵纪守法小组（精简版）
+# 参考 lyq2010/clash-ruleset，已清洗通配符为标准格式
+# ===================================================================
+
+DOMAIN-SUFFIX,docker.com
+DOMAIN-SUFFIX,docker.io
+DOMAIN-SUFFIX,dockerhub.com
+DOMAIN-SUFFIX,dockerstatic.com
+DOMAIN-SUFFIX,compose-spec.io
+# Docker 用的对象存储/CDN 分发（精确域名，避免误伤同平台其它服务）
+DOMAIN,docker-pinata-support.s3.amazonaws.com
+DOMAIN,d1q6f0aelx0por.cloudfront.net
+DOMAIN,d2wy8f7a9ursnm.cloudfront.net
+DOMAIN,d36jcksde1wxzq.cloudfront.net

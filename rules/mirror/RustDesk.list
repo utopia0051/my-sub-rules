@@ -1,0 +1,11 @@
+# ===== MIRRORED RULE (auto-generated header) =====
+# Upstream: https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/RustDesk/RustDesk_No_Resolve.yaml
+# Upstream repo: Accademia/Additional_Rule_For_Clash
+# Synced: 2026-07-27 07:07:31 -0700
+# Converted: payload YAML -> classical (by sync-mirror)
+# Update: python scripts/sync-mirror.py  (或让 Claude/agent 执行)
+# =================================================
+#- DOMAIN-SUFFIX   , rustdesk.com
+DOMAIN,rs-ny.rustdesk.com
+DOMAIN,rs-sg.rustdesk.com
+DOMAIN,rs-cn.rustdesk.com

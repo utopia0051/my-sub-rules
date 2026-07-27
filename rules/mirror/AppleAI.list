@@ -1,0 +1,23 @@
+# ===== MIRRORED RULE (auto-generated header) =====
+# Upstream: https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/AppleAI/AppleAI_No_Resolve.yaml
+# Upstream repo: Accademia/Additional_Rule_For_Clash
+# Synced: 2026-07-27 07:07:29 -0700
+# Converted: payload YAML -> classical (by sync-mirror)
+# Update: python scripts/sync-mirror.py  (或让 Claude/agent 执行)
+# =================================================
+# 来源 ： https://support.apple.com/en-us/101555
+# 搜索 ： Apple Intelligence, Siri, and Search
+DOMAIN-SUFFIX,smoot.apple.com
+DOMAIN,guzzoni.apple.com
+DOMAIN,gspe1-ssl.ls.apple.com
+DOMAIN,apple-relay.mask.apple-dns.net
+DOMAIN,apple-relay.fastly-edge.com
+DOMAIN,apple-relay.apple.com
+DOMAIN,apple-relay.cloudflare.com
+DOMAIN,cp4.cloudflare.com
+#- DOMAIN        , gateway.icloud.com
+#- DOMAIN        , gateway.fe2.apple-dns.net
+#- DOMAIN        , seed.siri.apple.com
+#- DOMAIN-SUFFIX , v.aaplimg.com
+#- DOMAIN        , seed-siri-apple-com.v.aaplimg.com
+#- DOMAIN        , smoot-searchv2-aapse1c.v.aaplimg.com

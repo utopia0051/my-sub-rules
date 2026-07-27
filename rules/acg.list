@@ -1,0 +1,52 @@
+# ===================================================================
+# acg.list —— 二次元 / 漫画 / 同人服务（走代理）
+# 绑定分组：🌍 国外网站（完整版/SR）、🚀 遵纪守法小组（精简版）
+# 整理自 Ctory-Nily/rule-script，逐条人工核对
+# ===================================================================
+
+# --- Pixiv（含 pixiv.cat 反代、fanbox、booth、pximg 图床） ---
+DOMAIN-SUFFIX,pixiv.net
+DOMAIN-SUFFIX,pixiv.org
+DOMAIN-SUFFIX,pixiv.co.jp
+DOMAIN-SUFFIX,pixiv.me
+DOMAIN-SUFFIX,pixiv.cat
+DOMAIN-SUFFIX,pximg.net
+DOMAIN-SUFFIX,fanbox.cc
+DOMAIN-SUFFIX,booth.pm
+
+# --- Niconico（弹幕站 + 静画/漫画/图床） ---
+DOMAIN-SUFFIX,niconico.com
+DOMAIN-SUFFIX,nicovideo.jp
+DOMAIN-SUFFIX,nicoseiga.jp
+DOMAIN-SUFFIX,nicomanga.jp
+DOMAIN-SUFFIX,nicodic.jp
+DOMAIN-SUFFIX,dmc.nico
+DOMAIN-SUFFIX,nimg.jp
+DOMAIN-SUFFIX,simg.jp
+
+# --- Bangumi 番组计划（追番社区） ---
+DOMAIN-SUFFIX,bangumi.tv
+DOMAIN-SUFFIX,bgm.tv
+DOMAIN-SUFFIX,bgm.wiki
+DOMAIN-SUFFIX,chii.in
+
+# --- E-Hentai / ExHentai ---
+DOMAIN-SUFFIX,e-hentai.org
+DOMAIN-SUFFIX,exhentai.org
+DOMAIN-SUFFIX,ehgt.org
+DOMAIN-SUFFIX,ehwiki.org
+DOMAIN-SUFFIX,hath.network
+DOMAIN-SUFFIX,hentaiverse.org
+IP-CIDR,178.175.128.0/21,no-resolve
+
+# --- 拷贝漫画 CopyManga ---
+DOMAIN-SUFFIX,mangacopy.com
+DOMAIN-SUFFIX,manga2025.com
+DOMAIN,api.mangacopy.com
+DOMAIN,api.manga2025.com
+DOMAIN,mapi.hotmangasd.com
+DOMAIN,mapi.hotmangasf.com
+DOMAIN,mapi.hotmangasg.com
+
+# --- 再漫画 ZaiManga ---
+DOMAIN-SUFFIX,zaimanhua.com

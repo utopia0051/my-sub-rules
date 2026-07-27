@@ -1,0 +1,34 @@
+# ===================================================================
+# stun.list —— WebRTC / STUN 防泄露规则（绑定分组：🔒 隐私防护，默认 REJECT）
+#
+# 原理：WebRTC 通过 STUN(UDP) 探测你的真实公网 IP。拦截 STUN 后，
+# 浏览器 WebRTC 泄露检测（browserleaks.com/webrtc、ipleak.net）将不再
+# 显示真实 IP。
+#
+# ⚠️ 前提：必须开启 TUN 模式，UDP 流量才会进入内核被这些规则命中；
+#    只开"系统代理"时 WebRTC 流量根本不经过 mihomo。
+# ⚠️ 副作用：拦截 STUN 可能影响视频会议/语音（Meet、Discord、微信语音等）
+#    的连通质量。若开会异常，把 🔒 隐私防护 分组切到 "🚀 节点选择"
+#    （节点需支持 UDP）或 "DIRECT" 即可；也可在 custom-direct.list 里
+#    为特定会议域名加白（自定义规则优先级更高）。
+# ===================================================================
+
+# 标准 STUN / TURN 端口（TCP+UDP）
+DST-PORT,3478
+DST-PORT,5349
+
+# Google STUN 常用端口段 19302-19309
+DST-PORT,19302
+DST-PORT,19303
+DST-PORT,19304
+DST-PORT,19305
+DST-PORT,19306
+DST-PORT,19307
+DST-PORT,19308
+DST-PORT,19309
+
+# 常见公共 STUN 服务器域名兜底（覆盖使用非标准端口的情况）
+DOMAIN-SUFFIX,stun.l.google.com
+DOMAIN-SUFFIX,stun.cloudflare.com
+DOMAIN-SUFFIX,stun.services.mozilla.com
+DOMAIN-SUFFIX,global.stun.twilio.com

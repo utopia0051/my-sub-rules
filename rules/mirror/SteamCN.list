@@ -1,0 +1,24 @@
+# ===== MIRRORED RULE (auto-generated header) =====
+# Upstream: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/SteamCN.list
+# Upstream repo: ACL4SSR/ACL4SSR
+# Synced: 2026-07-27 07:07:22 -0700
+# Update: python scripts/sync-mirror.py  (或让 Claude/agent 执行)
+# =================================================
+# 内容：SteamCN
+# 数量：16条
+DOMAIN,csgo.wmsj.cn
+DOMAIN,dl.steam.clngaa.com
+DOMAIN,dl.steam.ksyna.com
+DOMAIN,dota2.wmsj.cn
+DOMAIN,st.dl.bscstorage.net
+DOMAIN,st.dl.eccdnx.com
+DOMAIN,st.dl.pinyuncloud.com
+DOMAIN,steampipe.steamcontent.tnkjmec.com
+DOMAIN,steampowered.com.8686c.com
+DOMAIN,steamstatic.com.8686c.com
+DOMAIN,wmsjsteam.com
+DOMAIN,xz.pphimalayanrt.com
+DOMAIN-SUFFIX,cm.steampowered.com
+DOMAIN-SUFFIX,steamchina.com
+DOMAIN-SUFFIX,steamcontent.com
+DOMAIN-SUFFIX,steamusercontent.com

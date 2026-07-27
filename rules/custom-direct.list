@@ -1,0 +1,46 @@
+# ===================================================================
+# custom-direct.list —— 个人直连规则（完整版绑定：🎯 全球直连；精简版绑定：DIRECT）
+# 优先级高于所有社区规则：社区规则误杀了什么，就在这里加白。
+# 一行一条 Clash classical 规则，# 开头为注释。
+# ===================================================================
+
+# --- 迁移自旧配置：路由器/内网/ddns ---
+DOMAIN-SUFFIX,miwifi.com
+DOMAIN-SUFFIX,lan
+DOMAIN-SUFFIX,local
+DOMAIN-KEYWORD,ddns
+DOMAIN-SUFFIX,checkip.synology.com
+DOMAIN-SUFFIX,checkip.dyndns.org
+# ping0.cc 已移至 rules/leak-test.list 走代理（统一泄露检测出口，见该文件说明）
+
+# --- 迁移自旧配置：NTP 时间同步直连（走代理会导致时间偏移） ---
+DST-PORT,123
+DOMAIN-SUFFIX,ntp.org
+DOMAIN-SUFFIX,pool.ntp.org
+DOMAIN-SUFFIX,time.windows.com
+DOMAIN-SUFFIX,time.apple.com
+DOMAIN-SUFFIX,nasa.gov
+
+# --- 迁移自旧配置：PT 站直连（保种流量别走代理） ---
+DOMAIN-SUFFIX,ourbits.club
+DOMAIN-SUFFIX,hdchina.org
+DOMAIN-SUFFIX,m-team.cc
+DOMAIN-SUFFIX,pterclub.com
+
+# --- 苹果推送 APNs 直连（降低 iPhone 推送延迟与耗电；思路来自 MIHOMO_YAMLS 的 apns.list） ---
+DOMAIN-SUFFIX,push.apple.com
+
+# --- Apple ID 登录/商店/iCloud 已移至 rules/apple-proxy.list 走 🍎 Apple 组 ---
+#     （你有美区 ID，这些分区敏感服务改走美国节点更稳；push 推送仍在上面直连）
+
+# --- Steam 国内下载 CDN 直连（商店页面仍走代理） ---
+DOMAIN-SUFFIX,steamserver.net
+DOMAIN-SUFFIX,steampowered.com.8686c.com
+
+# ---- 常用示例，按需取消注释 ----
+# DOMAIN-SUFFIX,apple.com
+# DOMAIN-SUFFIX,microsoft.com
+# 视频会议 STUN 加白示例（比 stun.list 拦截优先级高）：
+# DOMAIN-SUFFIX,stun.miwifi.com
+# 按进程直连示例（Windows）：
+# PROCESS-NAME,WeChat.exe

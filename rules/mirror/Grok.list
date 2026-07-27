@@ -1,0 +1,12 @@
+# ===== MIRRORED RULE (auto-generated header) =====
+# Upstream: https://raw.githubusercontent.com/Accademia/Additional_Rule_For_Clash/main/Grok/Grok_No_Resolve.yaml
+# Upstream repo: Accademia/Additional_Rule_For_Clash
+# Synced: 2026-07-27 07:07:30 -0700
+# Converted: payload YAML -> classical (by sync-mirror)
+# Update: python scripts/sync-mirror.py  (或让 Claude/agent 执行)
+# =================================================
+DOMAIN-SUFFIX,x.ai
+DOMAIN-SUFFIX,grok.com
+DOMAIN-SUFFIX,featureassets.org
+DOMAIN-SUFFIX,xai.chronosphere.io
+IP-CIDR,17.253.4.125/32
