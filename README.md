@@ -78,7 +78,6 @@ raw 访问不稳可用 jsDelivr 加速：`https://cdn.jsdelivr.net/gh/utopia0051
 |---|---|---|
 | ✈️ 机场订阅 | — | 机场节点池（按名字关键字筛选） |
 | 🚀 遵纪守法小组 | — | 自建节点池（关键字取反） |
-| ♻️ 自动选择 | url-test | 全部节点混测，300 秒自动选最快 |
 | 🌍 国外网站 | 机场订阅 | 国外通用流量总开关（原 Proxies 的切换职责，但不再混入散节点） |
 | 🤖 AI 服务 | 机场订阅 | OpenAI/Claude/Gemini/Copilot；建议手动固定落地干净的那组 |
 | 🍎 Apple | 机场订阅 | App Store/Apple ID/iCloud/媒体商店——**美区 ID 手动选美国节点**；push/时间/系统更新仍直连 |
