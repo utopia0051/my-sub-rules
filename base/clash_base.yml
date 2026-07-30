@@ -26,6 +26,10 @@ geox-url:
   geoip: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
   geosite: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
   mmdb: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
+  # asn 必须显式写出：规则集含 11 条 IP-ASN（AI-VPSDance/Copilot/OpenAI/Telegram），
+  # 内核启动即需 ASN 库；缺此键会回落到 GitHub releases 直连，国内 TLS 超时且此时
+  # 代理未起、无法自救，整份配置测试失败。
+  asn: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb"
 
 # 域名嗅探：fake-ip 模式下提高按域名分流的准确性
 sniffer:
@@ -196,26 +200,37 @@ dns:
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
-  # 默认解析器：加密 DoH
+  # ⚠️ 兜底解析器【必须】是境外 DoH。geosite:cn 与 geolocation-!cn 都是有限清单，
+  # 之间有大片双不命中的灰区（实测 leak-test.list 31 个域名里 23 个落灰区：
+  # dnsleaktest.com / ping0.cc / browserscan.net / ipinfo.io / ifconfig.me …）。
+  # 兜底若为国内 DoH，这些域名就落到阿里/腾讯 DNS —— 这正是"规则模式泄露、
+  # 全局模式正常"的根因：全局模式不做规则匹配，全部 fake-ip 交落地节点解析。
+  # 配合 respect-rules: true，这两个 DoH 自身的查询也经代理发出。
   nameserver:
-    - "https://223.5.5.5/dns-query"
-    - "https://doh.pub/dns-query"
-  # 解析代理节点服务器域名专用，防止走系统明文 DNS
+    - "https://1.1.1.1/dns-query"
+    - "https://8.8.8.8/dns-query"
+  # 节点域名专用，必须国内 DoH 直连，否则解析节点要先连节点 —— 死循环
   proxy-server-nameserver:
     - "https://223.5.5.5/dns-query"
     - "https://doh.pub/dns-query"
-  # DNS 查询遵循分流规则出站（境外 DoH 的查询会经代理发出，国内 DoH 直连）
-  # —— 吸收自 mosdns 防泄露思路：境外域名解析绝不落在国内 DNS 上
+  # DNS 查询遵循分流规则出站（境外 DoH 经代理，国内 DoH 直连）
   respect-rules: true
   nameserver-policy:
-    # 国内与内网域名固定走国内 DoH，又快又不出错
+    # ⚠️ 顺序即优先级（dns/resolver.go matchPolicy 顺序遍历、首个命中即 return）。
+    # 这两条【必须】在 geosite:private,cn 之前 —— 它们被 geosite:cn 收录（实测在
+    # cn 清单 111873 条里），放后面会被国内 DoH 抢先命中，泄露检测站自己走国内 DNS。
+    # 刻意不用 YAML anchor 去重：本文件要经 subconverter(yaml-cpp) 反序列化再 emit，
+    # anchor 的 round-trip 行为随版本而异，为省两行引入不可验证的中间层不值当。
+    "+.browserleaks.com":
+      - "https://1.1.1.1/dns-query"
+      - "https://8.8.8.8/dns-query"
+    "+.whatismyip.com":
+      - "https://1.1.1.1/dns-query"
+      - "https://8.8.8.8/dns-query"
+    # 国内与内网域名走国内 DoH（白名单式收窄，其余一律兜底到境外 DoH）
     "geosite:private,cn":
       - "https://223.5.5.5/dns-query"
       - "https://doh.pub/dns-query"
-    # 境外域名（漏出 fake-ip 的场景）走干净 DoH，且经代理链路解析
-    "geosite:geolocation-!cn":
-      - "https://1.1.1.1/dns-query"
-      - "https://8.8.8.8/dns-query"
 
 # ---------------- TUN：接管全部流量（含 UDP）----------------
 # WebRTC/STUN 是 UDP 流量，仅开"系统代理"根本管不到它，必须开 TUN。
