@@ -1,4 +1,4 @@
-# sync-mirror.ps1 —— Windows 一键同步上游社区规则到本仓库镜像
+﻿# sync-mirror.ps1 —— Windows 一键同步上游社区规则到本仓库镜像
 # 用法：在仓库根目录右键"使用 PowerShell 运行"，或：
 #   powershell -ExecutionPolicy Bypass -File scripts\sync-mirror.ps1
 # 需要走代理时先执行：$env:HTTPS_PROXY = "http://127.0.0.1:7890"
@@ -42,17 +42,22 @@ Get-Content $Manifest -Encoding UTF8 | ForEach-Object {
             $body = ($out -join "`n") + "`n"
             $converted = $true
         }
-        # 规范化：给裸 IP-CIDR6/IP-CIDR 补前缀（mihomo 拒绝无前缀写法）
+        # 规范化：裸 IP-CIDR/IP-CIDR6 补前缀（mihomo 拒绝无前缀），IP 类规则补
+        # no-resolve（缺了会触发本地 DNS 解析 = 规则模式下泄露，上游 payload 常漏写）。
+        # SRC-IP-CIDR 不在此列：源 IP 无需解析。逻辑与 sync-mirror.py 保持一致。
+        $noResolve = @('IP-CIDR','IP-CIDR6','IP-ASN','GEOIP')
         $norm = foreach ($l in ($body -split "`n")) {
             $st = $l.Trim()
-            if (-not $st -or $st.StartsWith('#') -or $st.StartsWith(';') -or $st.StartsWith('//')) { $l.TrimEnd(); continue }
-            $p = ($st -split ',') | ForEach-Object { $_.Trim() }
-            if (($p[0] -eq 'IP-CIDR6' -or $p[0] -eq 'IP-CIDR') -and $p.Count -ge 2 -and $p[1] -notmatch '/') {
-                $p[1] += $(if ($p[0] -eq 'IP-CIDR6') { '/128' } else { '/32' })
-                ($p -join ',')
-            } else { $st }
+            if (-not $st -or $st -match '^(#|;|//)') { $l.TrimEnd(); continue }
+            $p = @(($st -split ',').Trim())
+            if ($p[0] -in 'IP-CIDR','IP-CIDR6' -and $p.Count -ge 2 -and $p[1] -notmatch '/') {
+                $p[1] += if ($p[0] -eq 'IP-CIDR6') { '/128' } else { '/32' }
+            }
+            if ($p[0] -in $noResolve -and $p -notcontains 'no-resolve') { $p += 'no-resolve' }
+            $p -join ','
         }
-        $body = ($norm -join "`n") + "`n"
+        # py 的 splitlines() 丢弃尾部空元素，-join 不会 —— TrimEnd 对齐两者产出
+        $body = ($norm -join "`n").TrimEnd("`n") + "`n"
         $stamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz"
         $repo = if ($url -match 'githubusercontent\.com/([^/]+/[^/]+)/') { $Matches[1] } else { 'unknown' }
         $conv = if ($converted) { "# Converted: payload YAML -> classical (by sync-mirror)`n" } else { "" }

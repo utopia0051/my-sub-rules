@@ -56,7 +56,13 @@ def payload_to_classical(text):
 def normalize_classical(text):
     """规范化 classical 规则，修复上游常见毛病：
     - IP-CIDR6 裸 IPv6 地址补 /128、IP-CIDR 裸 IPv4 补 /32（mihomo 会拒绝无前缀写法）
+    - IP 类规则（IP-CIDR/IP-CIDR6/IP-ASN/GEOIP）缺 no-resolve 时补齐：
+      少了它 mihomo 会为匹配规则先做一次本地 DNS 解析，在规则模式下这次解析
+      会落到国内 DNS 上 —— 属于 DNS 泄露。上游 payload 常漏写（例：Accademia
+      的 Grok_No_Resolve.yaml 里 `IP-CIDR , 17.253.4.125` 就没带）。
+      SRC-IP-CIDR 不在此列：源 IP 无需解析，加 no-resolve 无意义。
     对注释和其它规则类型原样保留。"""
+    NO_RESOLVE_TYPES = ("IP-CIDR", "IP-CIDR6", "IP-ASN", "GEOIP")
     out = []
     for l in text.splitlines():
         st = l.strip()
@@ -66,9 +72,9 @@ def normalize_classical(text):
         parts = [p.strip() for p in st.split(",")]
         if parts[0] in ("IP-CIDR6", "IP-CIDR") and len(parts) >= 2 and "/" not in parts[1]:
             parts[1] += "/128" if parts[0] == "IP-CIDR6" else "/32"
-            out.append(",".join(parts))
-        else:
-            out.append(st)
+        if parts[0] in NO_RESOLVE_TYPES and "no-resolve" not in parts[1:]:
+            parts.append("no-resolve")
+        out.append(",".join(parts))
     return "\n".join(out) + "\n"
 
 def main():
