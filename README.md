@@ -115,11 +115,12 @@ Shadowrocket 不是 Clash 内核，不吃 `sub-rules.ini` 那份 clash 配置（
 OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
 
 - **性能够的软路由** → 直接用完整版 `config/sub-rules.ini`（和桌面同一份，规则最全）。
-- **性能弱的软路由（推荐）** → 用软路由精简版 `config/openclash.ini`。它把 Global/China/AdvertisingLite 等大体量域名表换成 mihomo 的 **geosite/geoip 数据库**——`GEOSITE,geolocation-!cn` 一条规则顶 Global 的 3.4 万条，靠内核加载的二进制 geodata 匹配，**inline 规则量从几万条降到约 300 条**，内存负担骤降。你之前的精华小表（AI/金融/Emby/ACG/防泄露/个人规则）全部保留，砍掉的只是大社区表、用 geosite 等效替代。节点全部 **select 手动选**（无自动测速组），防泄露（fake-ip+DoH、STUN 端口+域名、BlockHttpDNS）一条不少。
+- **性能弱的软路由（推荐）** → 用软路由精简版 `config/openclash.ini`。它把 Global/China/AdvertisingLite 等大体量域名表换成 mihomo 的 **geosite/geoip 数据库**——`GEOSITE,geolocation-!cn` 一条规则顶 Global 的 3.4 万条，靠内核加载的二进制 geodata 匹配，**inline 规则量从几万条降到约几百条**，内存负担骤降。精华小表（AI 全套小表、金融/Emby/ACG、防泄露含 `STUN.list`、NTP/PT/远程桌面等特殊直连）全部保留，砍掉的只是大社区表、用 geosite 等效替代。节点全部 **select 手动选**（无自动测速组）。
   远程配置：`https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/openclash.ini`
-  代价：首次需下载 geodata 文件（geosite.dat ~4MB + geoip.dat ~17MB，OpenClash 本来也会下），之后匹配比 inline 大表更快更省内存。
+  代价：首次需下载 geodata 文件（geosite.dat ~4MB + geoip.dat ~17MB + ASN mmdb，OpenClash 本来也会下），之后匹配比 inline 大表更快更省内存。
 
-填法：OpenClash → 配置订阅 → 添加订阅，地址填订阅转换链接（`.../sub?target=clash&udp=true&url=<订阅>&config=<sub-rules.ini>`），和桌面完全一样。
+填法：OpenClash → 配置订阅 → 添加订阅，地址填订阅转换链接，**弱路由请把远程配置指到 openclash.ini**（不要误用完整版）：
+`.../sub?target=clash&udp=true&url=<订阅>&config=https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/openclash.ini`
 
 关键在 OpenClash 面板的几个开关，配对了防泄露 base 才生效（这是 OpenClash 版的"别让客户端覆盖配置 DNS"）：
 
@@ -127,6 +128,8 @@ OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
 2. **让 OpenClash 用配置文件的 DNS**：在「插件设置 → DNS」里**关闭"自定义上游 DNS 服务器"**。开着它 OpenClash 会用自己的 DNS 顶掉我们 base 里的 fake-ip + DoH，防泄露就失效了。关掉后它遵循配置文件的 `dns` 段（加密 DoH + geosite 分流解析），DNS 泄露防护才成立。
 3. **软路由是网关，全屋流量含 UDP 天然都过 OpenClash**——所以和 iOS 一样，防 WebRTC 泄露不用纠结 TUN 开关，🔒 隐私防护的 STUN 拦截直接生效。
 4. base 里的 118 条 fake-ip-filter 会随配置生效；若 OpenClash 面板另有 fake-ip 过滤追加项，两者合并、不冲突。
+5. **`allow-lan`**：共用 base 默认 `false`（桌面安全）；OpenClash 作网关时必须允许局域网访问。面板一般会强制改成 `true`——**不要关掉这项覆写**。若你改用「严格跟随配置文件」且局域网设备连不上代理端口，把生成配置里的 `allow-lan` 改为 `true`。
+6. **ASN 数据库**：`openclash.ini` 引用了含 `IP-ASN` 的 `AI-VPSDance.list`，base 已写死 jsDelivr 的 `geox-url.asn`。若面板另有「ASN / GeoIP 数据库」订阅并覆盖配置，也请改成同一 jsDelivr 地址，否则启动时直连 GitHub releases 会 TLS 超时、配置测试失败。
 
 验证同桌面：`dnsleaktest.com` 只出现落地节点 DNS，`browserleaks.com/webrtc` 不出现真实 IP。
 
