@@ -129,7 +129,7 @@ OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
 3. **软路由是网关，全屋流量含 UDP 天然都过 OpenClash**——所以和 iOS 一样，防 WebRTC 泄露不用纠结 TUN 开关，🔒 隐私防护的 STUN 拦截直接生效。
 4. base 里的 117 条 fake-ip-filter 会随配置生效；若 OpenClash 面板另有 fake-ip 过滤追加项，两者合并、不冲突（实测面板会追加一条 `rule-set:oc-cn-domain`，运行配置里共 118 条）。
 5. **`allow-lan`**：共用 base 默认 `false`（桌面安全）；OpenClash 作网关时必须允许局域网访问。面板一般会强制改成 `true`——**不要关掉这项覆写**。（实测某台 OpenWrt 上 OpenClash 会整段重建监听配置：端口与绑定地址都由面板生成，base 里的 `mixed-port` / `allow-lan` 不参与。但这依赖 OpenClash 版本与面板设置，不保证所有环境一致，务必自行验证。）验证：`netstat -tlnp | grep -i clash`，绑定地址应为 `:::` 或 `0.0.0.0`；若是 `127.0.0.1` 则未覆写，局域网设备会连不上，需把生成配置里的 `allow-lan` 改为 `true`（用「严格跟随配置文件」时常见）。
-6. **ASN 数据库**：`openclash.ini` 引用了含 `IP-ASN` 的 `AI-VPSDance.list`，base 已写死 jsDelivr 的 `geox-url.asn`。若面板另有「ASN / GeoIP 数据库」订阅并覆盖配置，也请改成同一 jsDelivr 地址，否则启动时直连 GitHub releases 会 TLS 超时、配置测试失败。
+6. **ASN 数据库**：`openclash.ini` 引用了含 `IP-ASN` 的 `AI-VPSDance.list` / `Copilot.list` / `OpenAI.list`（共 6 条），base 已写死 jsDelivr 的 `geox-url.asn`。（实测某台 OpenWrt 上，面板的数据库订阅只覆盖 `geosite` 与 `mmdb` 两个 URL——对应 UCI 的 `geosite_custom_url` / `geo_custom_url`，`asn` 与 `geoip` 保留配置文件的值。但这依赖 OpenClash 版本与面板设置，不保证所有环境一致，务必自行验证。）若面板确实覆盖了 `asn`，请一并改成同一 jsDelivr 地址，否则回落到 GitHub releases 直连，启动时代理未起、国内 TLS 超时、配置测试失败。验证：`grep -nA8 "geox-url" /etc/openclash/<你的配置>.yaml`。
 
 验证同桌面：`dnsleaktest.com` 只出现落地节点 DNS，`browserleaks.com/webrtc` 不出现真实 IP。
 

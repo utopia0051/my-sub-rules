@@ -28,9 +28,13 @@ geox-url:
   geoip: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
   geosite: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
   mmdb: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
-  # asn 必须显式写出：规则集含 11 条 IP-ASN（AI-VPSDance/Copilot/OpenAI/Telegram），
-  # 内核启动即需 ASN 库；缺此键会回落到 GitHub releases 直连，国内 TLS 超时且此时
-  # 代理未起、无法自救，整份配置测试失败。
+  # asn 必须显式写出：规则集含 IP-ASN（openclash.ini 6 条，另外几份引用了
+  # Telegram.list 的配置 11 条）。磁盘上没有 ASN.mmdb 时内核启动即触发下载，
+  # 缺此键会回落到 GitHub releases 直连——彼时代理未起、国内 TLS 超时，整份配置
+  # 测试失败。geo-auto-update 每 168h 会重走同一路径，写错的代价不止在首次启动。
+  # OpenClash 场景：实测某台 OpenWrt 上面板只覆盖 geosite/mmdb 两个 URL，asn 与
+  # geoip 保留本文件的值（依 OpenClash 版本与面板设置而异，不保证一致）。验证：
+  # grep -nA8 "geox-url" /etc/openclash/<你的配置>.yaml
   asn: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb"
 
 # 域名嗅探：fake-ip 模式下提高按域名分流的准确性
