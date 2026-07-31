@@ -127,8 +127,8 @@ OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
 1. **运行模式选 Fake-IP（增强模式）**——和 base 模板一致。
 2. **让 OpenClash 用配置文件的 DNS**：在「插件设置 → DNS」里**关闭"自定义上游 DNS 服务器"**。开着它 OpenClash 会用自己的 DNS 顶掉我们 base 里的 fake-ip + DoH，防泄露就失效了。关掉后它遵循配置文件的 `dns` 段（加密 DoH + geosite 分流解析），DNS 泄露防护才成立。
 3. **软路由是网关，全屋流量含 UDP 天然都过 OpenClash**——所以和 iOS 一样，防 WebRTC 泄露不用纠结 TUN 开关，🔒 隐私防护的 STUN 拦截直接生效。
-4. base 里的 118 条 fake-ip-filter 会随配置生效；若 OpenClash 面板另有 fake-ip 过滤追加项，两者合并、不冲突。
-5. **`allow-lan`**：共用 base 默认 `false`（桌面安全）；OpenClash 作网关时必须允许局域网访问。面板一般会强制改成 `true`——**不要关掉这项覆写**。若你改用「严格跟随配置文件」且局域网设备连不上代理端口，把生成配置里的 `allow-lan` 改为 `true`。
+4. base 里的 117 条 fake-ip-filter 会随配置生效；若 OpenClash 面板另有 fake-ip 过滤追加项，两者合并、不冲突（实测面板会追加一条 `rule-set:oc-cn-domain`，运行配置里共 118 条）。
+5. **`allow-lan`**：共用 base 默认 `false`（桌面安全）；OpenClash 作网关时必须允许局域网访问。面板一般会强制改成 `true`——**不要关掉这项覆写**。（实测某台 OpenWrt 上 OpenClash 会整段重建监听配置：端口与绑定地址都由面板生成，base 里的 `mixed-port` / `allow-lan` 不参与。但这依赖 OpenClash 版本与面板设置，不保证所有环境一致，务必自行验证。）验证：`netstat -tlnp | grep -i clash`，绑定地址应为 `:::` 或 `0.0.0.0`；若是 `127.0.0.1` 则未覆写，局域网设备会连不上，需把生成配置里的 `allow-lan` 改为 `true`（用「严格跟随配置文件」时常见）。
 6. **ASN 数据库**：`openclash.ini` 引用了含 `IP-ASN` 的 `AI-VPSDance.list`，base 已写死 jsDelivr 的 `geox-url.asn`。若面板另有「ASN / GeoIP 数据库」订阅并覆盖配置，也请改成同一 jsDelivr 地址，否则启动时直连 GitHub releases 会 TLS 超时、配置测试失败。
 
 验证同桌面：`dnsleaktest.com` 只出现落地节点 DNS，`browserleaks.com/webrtc` 不出现真实 IP。
