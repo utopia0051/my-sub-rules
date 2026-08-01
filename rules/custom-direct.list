@@ -37,6 +37,47 @@ DOMAIN-SUFFIX,push.apple.com
 DOMAIN-SUFFIX,steamserver.net
 DOMAIN-SUFFIX,steampowered.com.8686c.com
 
+# === 抖音客户端 / 直播 直连（13 条，两套体系共享） ===
+#   为什么放这里而不是 rules/douyin-live.list：
+#   本表被全部 7 份配置引用，包括 openclash.ini —— 后者不用镜像大表、
+#   靠 GEOSITE,cn 判国内，而下面这些域名 geosite:cn 里【也没有】，
+#   所以只有放在这张共享表里，openclash 才拿得到。
+#   判据（新增抖音域名时照此归类，两条，命中任一即放本表）：
+#     · geosite:cn 里没有            → 放本表（openclash 也需要它）
+#     · 被排在 douyin-live 之前的段抢位 → 放本表（本表在第 2 段，比 AI/广告都早）
+#       目前唯一这类例外是 bytednsdoc.com：它 geosite:cn 里【有】，但
+#       mirror/AI-VPSDance.list:91 收了 lf3-static.bytednsdoc.com，
+#       而 AI 段排在 douyin-live 之前，只有本表抢得过。
+#     · 以上都不成立（geosite:cn 有且无人抢位）→ 放 rules/douyin-live.list
+#       （只有走 China.list 的 6 份需要它）
+#   两个文件互斥不重叠，6 份主配置合起来仍是完整的 71 条覆盖。
+#   前提：本表排在广告拦截段【之前】，故下列域名必须与 AdvertisingLite /
+#   BanProgramAD / Hijacking 零冲突 —— 已实测确认 13 条冲突数均为 0。
+#   （snssdk.com 下混有 25 条广告埋点子域，所以它只能待在 douyin-live.list 里，
+#     由那张表排在广告段之后来解决，切勿挪来本表。）
+
+# --- 抢在第 4 段 🤖 AI 服务之前：AI-VPSDance.list:91 收了 lf3-static.bytednsdoc.com ---
+#     bytednsdoc 是字节自家 CDN 域，与 AI 服务无关，被误判会导致直播前端资源出国。
+DOMAIN-SUFFIX,bytednsdoc.com
+
+# --- geosite:cn 缺失项：直播拉流备用 CDN / 特效资源 ---
+DOMAIN-SUFFIX,bytedancevod.com
+DOMAIN-SUFFIX,bytesyscdn.com
+DOMAIN-SUFFIX,byteeffecttos.com
+
+# --- geosite:cn 缺失项：抖音汉语 / 说说 ---
+DOMAIN-SUFFIX,douyinhanyu.com
+DOMAIN-SUFFIX,ieshuoshan.com
+DOMAIN-SUFFIX,ieshuoshan.net
+
+# --- geosite:cn 缺失项：火山版（抖音火山版直播走同一套 CDN 调度） ---
+DOMAIN-SUFFIX,hotsoonapp.com
+DOMAIN-SUFFIX,hotsoonapp.net
+DOMAIN-SUFFIX,hotsoonvideo.com
+DOMAIN-SUFFIX,hotsoonvideo.net
+DOMAIN-SUFFIX,hotsoonzb.com
+DOMAIN-SUFFIX,hotsoonzb.net
+
 # ---- 常用示例，按需取消注释 ----
 # DOMAIN-SUFFIX,apple.com
 # DOMAIN-SUFFIX,microsoft.com

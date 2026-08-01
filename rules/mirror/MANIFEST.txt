@@ -64,3 +64,53 @@ AI-VPSDance.list	https://raw.githubusercontent.com/VPSDance/ai-proxy-rules/main/
 # 不想要某个大文件（如 AdRules 6MB）时，删掉对应行即可。
 # ===============================================================
 AdRules.list	https://raw.githubusercontent.com/Cats-Team/AdRules/main/adrules.list
+
+# ===============================================================
+# 〔自维护规则表〕—— 不是镜像，sync-mirror.py 不会碰它们
+# ---------------------------------------------------------------
+# 下面只是「这些自维护表的域名当初是从哪里挑出来的」的来源登记，
+# 供日后复核 / 重新采集时对照。全部写成注释，因为 sync-mirror.py
+# (scripts/sync-mirror.py:84) 会把任何非 # 开头的行当成待下载镜像 ——
+# 若在此写成 "文件名<TAB>URL"，sync 会在 rules/mirror/ 下造出一个同名
+# 僵尸副本（下载落点被钉死在 MIRROR 目录，见 sync-mirror.py:92），
+# 而 6 份配置引用的是 rules/ 下的路径，那个副本永远不生效、只会误导人。
+# 注：自维护表本身不会被覆盖，除非写成 "../文件名" 这种带路径的形式
+# 才能逃出 mirror/ 目录 —— 别那么写。
+# 要重新采集时，手动取下列 URL 自行比对，不要交给 sync 脚本。
+# ===============================================================
+#
+# rules/douyin-live.list（58 条）+ rules/custom-direct.list 抖音段（13 条）
+#   采集日期：2026-08
+#   目的：修抖音客户端/直播在规则模式下被误代理导致的卡顿。
+#   候选池来自以下 4 个上游，取并集后做差集与存活验证：
+#     https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ByteDance/ByteDance.list
+#     https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/DouYin/DouYin.list
+#     https://raw.githubusercontent.com/LM-Firefly/Rules/master/Domestic-Services/ByteDance.list
+#     https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/douyin
+#     （参考对照，未直接取用：同仓库 data/bytedance，349 条，
+#       其中 6 条带 @!cn 属性为海外域名）
+#   筛选流程：
+#     1. 并集 132 个候选域名
+#     2. nslookup 向 223.5.5.5 逐个查权威 NS/SOA 验活，剔除 16 个死域名
+#        （注意：本机 DNS 走 clash fake-ip，任何域名都返回 198.18.x，
+#          不能用 socket 解析判断域名真伪，必须直连公共 DNS 查权威记录）
+#     3. 剔除 45 个 mirror/China.list 已覆盖的冗余项
+#     4. 余 70 条，再按「geosite:cn 是否已覆盖」二分：
+#        · geosite:cn 已有 58 条 → rules/douyin-live.list
+#          （只有走 China.list 的 6 份主配置需要；openclash 靠 GEOSITE,cn 已覆盖）
+#        · geosite:cn 也缺 12 条 → rules/custom-direct.list
+#          （两套体系共享，openclash 也拿得到）
+#        · 例外 bytednsdoc.com：geosite:cn 里有，但 mirror/AI-VPSDance.list:91
+#          收了 lf3-static.bytednsdoc.com 且 AI 段更早，故也放 custom-direct.list
+#          （该表在第 2 段，比 AI 段早）→ custom-direct 抖音段共 13 条
+#     5. 逐条核对与 AdvertisingLite / BanProgramAD / Hijacking 冲突：
+#        custom-direct 侧 13 条冲突数为 0（该表排在广告段之前，必须为 0）；
+#        douyin-live 侧 snssdk.com 下有 25 条广告埋点子域，故该表
+#        必须挂在广告拦截段【之后】、GlobalMedia/Global/China【之前】。
+#   刻意排除：tiktok.com / tiktokv.com / musical.ly / byteoversea.com /
+#     ibytedtos.com / ibyteimg.com / isnssdk.com（海外，走 📺 流媒体）；
+#     marscode / trae.ai（走 🤖 AI）；pangolin-* / pglstatp-*（保持 🛑 拦截）。
+#
+# 其余自维护表（custom-proxy / custom-reject / finance-direct /
+# apple-proxy / leak-test / stun 等）为手工整理，无固定上游来源。
+

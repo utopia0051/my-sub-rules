@@ -1,0 +1,133 @@
+# ===================================================================
+# douyin-live.list —— 抖音客户端 / 直播 分流补全（绑定：🎯 全球直连）
+#
+# 【适用范围】仅供 6 份走镜像表的配置引用：
+#   sub-rules.ini / sub-rules-adblock.ini / shadowrocket.ini /
+#   jichang-rules.ini / dangevip-rules.ini / basic.ini
+#   openclash.ini 不引用本表 —— 它用 GEOSITE,cn，本表 58 条它已全部覆盖，
+#   挂上去是纯冗余。详见文末〔为什么拆成两个文件〕。
+#
+# 【为什么需要这张表】
+# 规则表里原本有三处把抖音直播流量送去了代理，规则模式下看直播因此卡顿：
+#   1. GlobalMedia.list:977 的 DOMAIN-SUFFIX,snssdk.com
+#      GlobalMedia 在第 6 段、China.list 在第 8 段，顺序即优先级 ——
+#      所有 *.snssdk.com（客户端 API、弹幕 frontier、直播心跳）全部出国。
+#   2. AI-VPSDance.list:91 的 DOMAIN-SUFFIX,lf3-static.bytednsdoc.com
+#      抖音前端静态资源被送去 🤖 AI 服务组。
+#   3. blackmatrix7 China.list 未收录的 208 个字节系域名落进 🐟 漏网之鱼 ——
+#      其中含直播拉流备用 CDN（volccdn / toscdn / zijieimg / bytesyscdn …）。
+# 主链路（douyincdn / amemv.com / douyinliving / douyinvod）本来就被 China.list
+# 命中直连，所以症状是"时好时卡"而非完全打不开——卡的是这些辅助域名。
+#
+# 【数据来源与筛选】完整来源登记见 rules/mirror/MANIFEST.txt 末尾〔自维护规则表〕
+#   - v2fly/domain-list-community  data/douyin（68 条）、data/bytedance（349 条）
+#   - blackmatrix7 ios_rule_script  ByteDance.list（371 条）+ DouYin.list（13 条）
+#   - LM-Firefly/Rules             Domestic-Services/ByteDance.list（439 行）
+#   132 个候选 → 逐个用 nslookup 向 223.5.5.5 查 NS/SOA 权威记录验活
+#   （本机 DNS 走 clash fake-ip，任何域名都返回 198.18.x，不能用来判断真伪）
+#   → 剔除 16 个无权威记录的死域名（如 dyshortvideo.com）
+#   → 剔除 45 个 China.list 已覆盖的冗余项
+#   → 得 70 条，其中 12 条 geosite:cn 也缺、加 bytednsdoc.com（被 AI 表抢位）
+#     共 13 条挪去 custom-direct.list，本表余 58 条。
+#
+# 【刻意排除，勿加】
+#   - TikTok / 海外：tiktok.com tiktokv.com ibytedtos.com ibyteimg.com
+#     musical.ly muscdn.com byteoversea.com isnssdk.com sgpstatp.com ipstatp.com
+#     lf16-effectcdn.byteeffecttos-g.com —— 继续走 📺 流媒体组
+#   - 字节 AI 产品：marscode trae.ai —— 继续走 🤖 AI 服务组
+#   - 广告 SDK：pangolin-* pglstatp-* csjplatform oceanengine —— 继续被 🛑 拦截
+#   - 非抖音业务：feishu larksuite juejin doubao volcengine —— 各走各的
+#   已实测：本表 58 条 + custom-direct 的 13 条与 AdvertisingLite / BanProgramAD /
+#   Hijacking 零冲突，不会放行任何原本被拦的广告域名。
+#
+# 【插入位置要求】本表必须排在广告拦截段【之后】、Telegram/GlobalMedia/Global/China
+#   【之前】。原因：snssdk.com 下同时有正经的直播 API 和 25 条广告埋点子域
+#   （i./log./mcs./pangolin./xlog./temai. 等，见 AdvertisingLite.list）。若本表排在
+#   广告段之前，DOMAIN-SUFFIX,snssdk.com 会把那 25 条全部放行 —— 已实测确认。
+#   排在广告段之后：广告子域先被 REJECT，剩余的 snssdk 直播流量再落到本表直连。
+#
+# 【为什么拆成两个文件 —— 新增域名时看这里】
+#   判据只有一条：拿域名去 geosite:cn 查（v2fly domain-list-community 的
+#   data/cn 递归展开 include，约 8200 条）。
+#     · geosite:cn 里【没有】     → 写进 custom-direct.list（两套体系共享，
+#                                   openclash 也能拿到；但必须先确认与三张
+#                                   广告表零冲突，因为该表排在广告段之前）
+#     · geosite:cn 里【已经有】   → 写进本表（只有走 China.list 的 6 份需要它，
+#                                   openclash 靠 GEOSITE,cn 已覆盖）
+#     · 例外：若该域名被排在本表【之前】的段抢走（如 AI-VPSDance），
+#       则不论 geosite:cn 有没有，都得放 custom-direct.list 才抢得回来。
+#       目前唯一这类是 bytednsdoc.com，见 custom-direct.list 里的说明。
+#   本表 58 条正是"geosite:cn 有、China.list 没有、且无人抢位"的差集。
+#   两表互斥不重叠，6 份主配置合起来仍是完整的 71 条覆盖，
+#   openclash 只从 custom-direct.list 多拿它真正需要的 13 条。
+# ===================================================================
+
+# --- 关键：盖住 GlobalMedia.list 的 DOMAIN-SUFFIX,snssdk.com ---
+#     国内抖音/头条客户端 API 与弹幕长连接全在此域下。
+#     海外 TikTok 用的是 isnssdk.com，不受影响，仍走 📺 流媒体。
+DOMAIN-SUFFIX,snssdk.com
+
+# --- 直播拉流 / 播放 CDN（卡顿主因，China.list 全部缺失） ---
+DOMAIN-SUFFIX,bdgslb.com
+DOMAIN-SUFFIX,bdxiguavod.com
+DOMAIN-SUFFIX,bytecdn.com
+DOMAIN-SUFFIX,bytecdntp.com
+DOMAIN-SUFFIX,bytefcdnrd.com
+DOMAIN-SUFFIX,huoshanlive.com
+DOMAIN-SUFFIX,huoshanvod.com
+DOMAIN-SUFFIX,hypercachenode.com
+DOMAIN-SUFFIX,idouyinliving.com
+DOMAIN-SUFFIX,idouyinvod.com
+DOMAIN-SUFFIX,ihuoshanlive.com
+DOMAIN-SUFFIX,ihuoshanvod.com
+DOMAIN-SUFFIX,nextvid.net
+DOMAIN-SUFFIX,oortgslb.com
+DOMAIN-SUFFIX,supercachenet.com
+DOMAIN-SUFFIX,supercachenode.com
+DOMAIN-SUFFIX,toscdn.com
+DOMAIN-SUFFIX,ultracachenode.com
+DOMAIN-SUFFIX,volccdn.com
+DOMAIN-SUFFIX,zjgslb.com
+
+# --- 直播弹幕 / 静态资源 / 图片 ---
+DOMAIN-SUFFIX,bdurl.net
+DOMAIN-SUFFIX,bytedns2.com
+DOMAIN-SUFFIX,huoshanimg.com
+DOMAIN-SUFFIX,idouyinpic.com
+DOMAIN-SUFFIX,idouyinstatic.com
+DOMAIN-SUFFIX,ihuoshanimg.com
+DOMAIN-SUFFIX,ihuoshanstatic.com
+DOMAIN-SUFFIX,zijieimg.com
+DOMAIN-SUFFIX,zijieimg.net
+
+# --- 抖音主站 / 客户端 API / 抖音支付 / 开放平台 ---
+DOMAIN-SUFFIX,activity-wbsj.com
+DOMAIN-SUFFIX,aihst8.com
+DOMAIN-SUFFIX,amemv.net
+DOMAIN-SUFFIX,awemeughun.com
+DOMAIN-SUFFIX,awemeuglang.com
+DOMAIN-SUFFIX,awemeugsoul.com
+DOMAIN-SUFFIX,awemeugwave.com
+DOMAIN-SUFFIX,boxdouyin.com
+DOMAIN-SUFFIX,cookicut.com
+DOMAIN-SUFFIX,douyinact.com
+DOMAIN-SUFFIX,douyinact.net
+DOMAIN-SUFFIX,douyinec.com
+DOMAIN-SUFFIX,douyinfe.com
+DOMAIN-SUFFIX,douyinpay.com
+DOMAIN-SUFFIX,duoshan.com
+DOMAIN-SUFFIX,iesdouyin.net
+DOMAIN-SUFFIX,ieshuodong.net
+DOMAIN-SUFFIX,ihst8.com
+DOMAIN-SUFFIX,kesong.co
+DOMAIN-SUFFIX,open-douyin.com
+DOMAIN-SUFFIX,ppkankan01.com
+DOMAIN-SUFFIX,qishui.com
+
+# --- 火山版 / 西瓜视频（与抖音同源，直播走同一套 CDN 调度） ---
+DOMAIN-SUFFIX,huoshanvideo.net
+DOMAIN-SUFFIX,huoshanxiaoshipin.net
+DOMAIN-SUFFIX,huoshanzhibo.net
+DOMAIN-SUFFIX,xiguaapp.com
+DOMAIN-SUFFIX,xiguashipin.net
+DOMAIN-SUFFIX,xiguavideo.net

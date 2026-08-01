@@ -28,7 +28,8 @@ rules/finance-direct.list 境外银行(汇丰/众安)走直连
 rules/emby.list           Emby 影音服务走代理（含自建 nijigem.by）
 rules/docker.list         Docker 走代理（拉镜像更稳）
 rules/apple-proxy.list    Apple 分区敏感服务（App Store/Apple ID/iCloud）走 🍎 Apple 组（美区 ID）
-rules/custom-direct.list  个人直连（已迁移：PT 站、NTP、ddns、路由器、Steam CDN）
+rules/custom-direct.list  个人直连（已迁移：PT 站、NTP、ddns、路由器、Steam CDN；含抖音 13 条）
+rules/douyin-live.list    抖音客户端/直播直连（58 条字节系 CDN，修直播卡顿；仅 6 份主配置引用）
 rules/custom-proxy.list   个人强制代理（已迁移：dpdns、暴雪、scholar）
 rules/custom-reject.list  个人屏蔽（已迁移：YY 广告全家桶）
 rules/stun.list           WebRTC/STUN 防泄露规则（Clash 版用）
@@ -98,7 +99,11 @@ raw 访问不稳可用 jsDelivr 加速：`https://cdn.jsdelivr.net/gh/utopia0051
 >
 > 当前各配置在 CMFA 的可见分组数（规则模式 / 全局模式）：`sub-rules.ini`、`sub-rules-adblock.ini`、`openclash.ini` = 12 / 13；`jichang-rules.ini`、`dangevip-rules.ini` = 10 / 11；`basic.ini` = 2 / 3。全局模式多出的一项是 GLOBAL 自己。
 
-规则优先级（自上而下）：局域网 → **个人自定义（直连/代理/屏蔽）** → STUN 防护 → AI → 广告拦截 → Telegram → 流媒体 → 国外合集 → 国内直连 → GEOIP CN → 兜底。个人规则永远最先匹配，社区规则误杀/漏杀都能在 `rules/` 里一票否决。
+规则优先级（自上而下）：局域网 → **个人自定义（直连/代理/屏蔽）** → STUN 防护 → AI → 广告拦截 → **抖音直播直连** → Telegram → 流媒体 → 国外合集 → 国内直连 → GEOIP CN → 兜底。个人规则永远最先匹配，社区规则误杀/漏杀都能在 `rules/` 里一票否决。
+
+> 为什么抖音直播那张表排在广告拦截**之后**而不是最前面：`snssdk.com` 这个域下既有直播 API 和弹幕长连接，也有 25 条广告埋点子域（`i.` `log.` `mcs.` `pangolin.` `xlog.` `temai.` 等，见 `AdvertisingLite.list`）。整域直连若排在广告段之前，会把那 25 条一起放行。排在广告段之后，广告子域先被 REJECT，剩下的直播流量再落到直连，两边都不牺牲。
+>
+> 抖音规则为什么拆成两个文件：候选 70 条按「`geosite:cn` 是否已覆盖」二分。`geosite:cn` 已有的 58 条进 `douyin-live.list`，只给走 `China.list` 的 6 份配置引用；`geosite:cn` 也缺的 12 条（火山版 `hotsoon*`、`bytesyscdn` 等）进 `custom-direct.list`，因为那张表被全部 7 份配置共享，`openclash.ini` 靠它才拿得到。`bytednsdoc.com` 是第三种情况：`geosite:cn` 里有，但 `AI-VPSDance.list` 收了它的子域且 AI 段排得更早，只有 `custom-direct.list`（第 2 段）抢得回来，所以那张表的抖音段共 13 条。两个文件互斥不重叠：6 份主配置合起来仍是完整 71 条覆盖，而 `openclash.ini` 一行不改、只多拿它真正需要的 13 条，不必为 58 条冗余规则多下一张表。新增抖音域名时照此判据归类（`custom-direct.list` 排在广告段之前，放进去的域名必须与三张广告表零冲突，所以 `snssdk.com` 只能留在 `douyin-live.list`）。
 
 精简版只有 `🚀 遵纪守法小组`（全部节点混在一起）和 `🔒 隐私防护` 两个组，其余规则直接落 DIRECT/REJECT，结构与旧 basic.ini 完全一致。
 
