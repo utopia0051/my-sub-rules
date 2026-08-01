@@ -90,9 +90,13 @@ raw 访问不稳可用 jsDelivr 加速：`https://cdn.jsdelivr.net/gh/utopia0051
 | 🛑 广告拦截 | REJECT | AdvertisingLite + 你的 YY 屏蔽包 |
 | 🎯 全球直连 | DIRECT | 局域网/个人直连/国内域名/国内 IP |
 | 🐟 漏网之鱼 | 🔀机场or单个切换 | 未匹配流量兜底 |
-| GLOBAL | 🔀机场or单个切换 | 仅 Clash「全局模式」用；已展开全部节点，可直接选任意单节点（规则模式不参与分流） |
+| GLOBAL | 🔀机场or单个切换 | 仅 Clash「全局模式」用；**已显式列出全部 12 个分组**（安卓 CMFA 的分组列表可见性依赖这个）+ 全部节点，可直接选任意单节点（规则模式不参与分流） |
 
-> **关于 Clash「全局模式」**：全局模式是客户端左上角的模式切换（规则/全局/直连）。配置里已**显式定义 GLOBAL 组并展开全部节点**，所以切到全局模式时能直接选任意单节点。但要注意：全局模式会让所有流量走 GLOBAL、**绕过这里全部分流与防泄露规则**，不建议日常用。想固定某个单节点又保留分流/防泄露，建议留在规则模式、在「🔀机场or单个切换」里选即可，效果等同。（Shadowrocket 是 Surge 格式，全局路由用 App 顶部的节点选择器、本就能选任意节点，不吃 GLOBAL 组，故未加。）
+> **关于 Clash「全局模式」**：全局模式是客户端左上角的模式切换（规则/全局/直连）。配置里已**显式定义 GLOBAL 组，成员为「全部 12 个分组 + 全部节点 + DIRECT」**，所以切到全局模式时能直接选任意单节点。但要注意：全局模式会让所有流量走 GLOBAL、**绕过这里全部分流与防泄露规则**，不建议日常用；且此时**不要选中 `🛑 广告拦截`**（该组只有 REJECT/DIRECT，选中等于全部流量被拦、直接断网）。想固定某个单节点又保留分流/防泄露，建议留在规则模式、在「🔀机场or单个切换」里选即可，效果等同。（Shadowrocket 是 Surge 格式，全局路由用 App 顶部的节点选择器、本就能选任意节点，不吃 GLOBAL 组，故未加。）
+
+> **⚠️ 安卓 CMFA 必须把所有分组写进 GLOBAL**：Clash Meta for Android 的分组列表**只列 GLOBAL 成员里属于「组」的项**（`core/src/main/golang/native/tunnel/proxies.go` 的 `QueryProxyGroupNames`：取 `GLOBAL` 的成员逐个判断，非组的节点跳过），而不是列配置里定义的全部 `proxy-groups`。所以 GLOBAL 若只写 3 个组，其余服务组（🌍/🤖/🍎/📺/📲/🔒/🛑/🐟/🎯）在安卓端**全部不可见**，规则照常分流但没法手动切；桌面版 Clash Verge 不受影响（它直接读 `/proxies` API 列出所有组）。反直觉的一点：配置里**不写** GLOBAL 时 mihomo 会自动生成一个包含全部节点+全部组的 GLOBAL，CMFA 反而什么都能看到——手写 GLOBAL 才需要自己补全。`proxy_group_order` 只影响显示顺序，救不了这个。
+>
+> 当前各配置在 CMFA 的可见分组数（规则模式 / 全局模式）：`sub-rules.ini`、`sub-rules-adblock.ini`、`openclash.ini` = 12 / 13；`jichang-rules.ini`、`dangevip-rules.ini` = 10 / 11；`basic.ini` = 2 / 3。全局模式多出的一项是 GLOBAL 自己。
 
 规则优先级（自上而下）：局域网 → **个人自定义（直连/代理/屏蔽）** → STUN 防护 → AI → 广告拦截 → Telegram → 流媒体 → 国外合集 → 国内直连 → GEOIP CN → 兜底。个人规则永远最先匹配，社区规则误杀/漏杀都能在 `rules/` 里一票否决。
 
