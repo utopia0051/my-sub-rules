@@ -15,6 +15,7 @@ config/basic.ini          Clash 精简版：单组直出（对标旧 Basic/basic
 config/shadowrocket.ini   Shadowrocket 专用（iOS）：同分组、STUN 端口内联、DoH 防泄露
 config/sub-rules-adblock.ini        【可选/备用】硬核去广告版：= sub-rules.ini + Cats-Team AdRules
 config/openclash.ini      软路由精简版：geosite/geoip 替代大表、手动选节点、防泄露完整
+config/openclash-jichang.ini  软路由精简版·仅机场订阅：规则同 openclash.ini，只留一个机场节点组
 base/clash_base.yml       Clash/mihomo 基础模板（DNS 防泄露、sniffer、TUN 参数）
 base/shadowrocket.conf    Shadowrocket 基础模板（Surge 格式，DoH + 关 IPv6）
 rules/claude-code.list    Claude/Claude Code 完整域名（API/CDN/认证/遥测/IP 段）
@@ -97,13 +98,13 @@ raw 访问不稳可用 jsDelivr 加速：`https://cdn.jsdelivr.net/gh/utopia0051
 
 > **⚠️ 安卓 CMFA 必须把所有分组写进 GLOBAL**：Clash Meta for Android 的分组列表**只列 GLOBAL 成员里属于「组」的项**（`core/src/main/golang/native/tunnel/proxies.go` 的 `QueryProxyGroupNames`：取 `GLOBAL` 的成员逐个判断，非组的节点跳过），而不是列配置里定义的全部 `proxy-groups`。所以 GLOBAL 若只写 3 个组，其余服务组（🌍/🤖/🍎/📺/📲/🔒/🛑/🐟/🎯）在安卓端**全部不可见**，规则照常分流但没法手动切；桌面版 Clash Verge 不受影响（它直接读 `/proxies` API 列出所有组）。反直觉的一点：配置里**不写** GLOBAL 时 mihomo 会自动生成一个包含全部节点+全部组的 GLOBAL，CMFA 反而什么都能看到——手写 GLOBAL 才需要自己补全。`proxy_group_order` 只影响显示顺序，救不了这个。
 >
-> 当前各配置在 CMFA 的可见分组数（规则模式 / 全局模式）：`sub-rules.ini`、`sub-rules-adblock.ini`、`openclash.ini` = 12 / 13；`jichang-rules.ini`、`dangevip-rules.ini` = 10 / 11；`basic.ini` = 2 / 3。全局模式多出的一项是 GLOBAL 自己。
+> 当前各配置在 CMFA 的可见分组数（规则模式 / 全局模式）：`sub-rules.ini`、`sub-rules-adblock.ini` = 12 / 13；`jichang-rules.ini`、`dangevip-rules.ini` = 10 / 11；`basic.ini` = 2 / 3。全局模式多出的一项是 GLOBAL 自己。两份 `openclash*.ini` 只用于软路由，不进安卓客户端，故不在此列（它们的 GLOBAL 同样列全了分组，无害）。
 
 规则优先级（自上而下）：局域网 → **个人自定义（直连/代理/屏蔽）** → STUN 防护 → AI → 广告拦截 → **抖音直播直连** → Telegram → 流媒体 → 国外合集 → 国内直连 → GEOIP CN → 兜底。个人规则永远最先匹配，社区规则误杀/漏杀都能在 `rules/` 里一票否决。
 
 > 为什么抖音直播那张表排在广告拦截**之后**而不是最前面：`snssdk.com` 这个域下既有直播 API 和弹幕长连接，也有 25 条广告埋点子域（`i.` `log.` `mcs.` `pangolin.` `xlog.` `temai.` 等，见 `AdvertisingLite.list`）。整域直连若排在广告段之前，会把那 25 条一起放行。排在广告段之后，广告子域先被 REJECT，剩下的直播流量再落到直连，两边都不牺牲。
 >
-> 抖音规则为什么拆成两个文件：候选 70 条按「`geosite:cn` 是否已覆盖」二分。`geosite:cn` 已有的 58 条进 `douyin-live.list`，只给走 `China.list` 的 6 份配置引用；`geosite:cn` 也缺的 12 条（火山版 `hotsoon*`、`bytesyscdn` 等）进 `custom-direct.list`，因为那张表被全部 7 份配置共享，`openclash.ini` 靠它才拿得到。`bytednsdoc.com` 是第三种情况：`geosite:cn` 里有，但 `AI-VPSDance.list` 收了它的子域且 AI 段排得更早，只有 `custom-direct.list`（第 2 段）抢得回来，所以那张表的抖音段共 13 条。两个文件互斥不重叠：6 份主配置合起来仍是完整 71 条覆盖，而 `openclash.ini` 一行不改、只多拿它真正需要的 13 条，不必为 58 条冗余规则多下一张表。新增抖音域名时照此判据归类（`custom-direct.list` 排在广告段之前，放进去的域名必须与三张广告表零冲突，所以 `snssdk.com` 只能留在 `douyin-live.list`）。
+> 抖音规则为什么拆成两个文件：候选 70 条按「`geosite:cn` 是否已覆盖」二分。`geosite:cn` 已有的 58 条进 `douyin-live.list`，只给走 `China.list` 的 6 份配置引用；`geosite:cn` 也缺的 12 条（火山版 `hotsoon*`、`bytesyscdn` 等）进 `custom-direct.list`，因为那张表被全部 8 份配置共享，两份 `openclash*.ini` 靠它才拿得到。`bytednsdoc.com` 是第三种情况：`geosite:cn` 里有，但 `AI-VPSDance.list` 收了它的子域且 AI 段排得更早，只有 `custom-direct.list`（第 2 段）抢得回来，所以那张表的抖音段共 13 条。两个文件互斥不重叠：6 份主配置合起来仍是完整 71 条覆盖，而 `openclash.ini` 一行不改、只多拿它真正需要的 13 条，不必为 58 条冗余规则多下一张表。新增抖音域名时照此判据归类（`custom-direct.list` 排在广告段之前，放进去的域名必须与三张广告表零冲突，所以 `snssdk.com` 只能留在 `douyin-live.list`）。
 
 精简版只有 `🚀 遵纪守法小组`（全部节点混在一起）和 `🔒 隐私防护` 两个组，其余规则直接落 DIRECT/REJECT，结构与旧 basic.ini 完全一致。
 
@@ -121,12 +122,17 @@ Shadowrocket 不是 Clash 内核，不吃 `sub-rules.ini` 那份 clash 配置（
 
 ## OpenClash（软路由）专用说明
 
-OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
+OpenClash 是 OpenWrt 上的 mihomo 内核插件。有三份配置可选：
 
 - **性能够的软路由** → 直接用完整版 `config/sub-rules.ini`（和桌面同一份，规则最全）。
 - **性能弱的软路由（推荐）** → 用软路由精简版 `config/openclash.ini`。它把 Global/China/AdvertisingLite 等大体量域名表换成 mihomo 的 **geosite/geoip 数据库**——`GEOSITE,geolocation-!cn` 一条规则顶 Global 的 3.4 万条，靠内核加载的二进制 geodata 匹配，**inline 规则量从几万条降到约几百条**，内存负担骤降。精华小表（AI 全套小表、金融/Emby/ACG、防泄露含 `STUN.list`、NTP/PT/远程桌面等特殊直连）全部保留，砍掉的只是大社区表、用 geosite 等效替代。节点全部 **select 手动选**（无自动测速组）。
   远程配置：`https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/openclash.ini`
   代价：首次需下载 geodata 文件（geosite.dat ~4MB + geoip.dat ~17MB + ASN mmdb，OpenClash 本来也会下），之后匹配比 inline 大表更快更省内存。
+- **弱软路由 + 只挂机场订阅（没有自建节点）** → 用 `config/openclash-jichang.ini`。分流规则与 `openclash.ini` 相同（同一套 geosite 精简规则、同样的防泄露），区别只在节点分组：去掉 `🔀机场or单个切换` 和 `🚀 遵纪守法小组`，只留一个 `✈️ 机场订阅` 组用 `.*` 收全部节点，共 **10 个分组**。
+  远程配置：`https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/openclash-jichang.ini`
+  为什么需要单独一份：`openclash.ini` 的两个来源组靠**节点名关键字**（`机场订阅|IEPL|实验性|高级|标准`）互补切分，只挂机场订阅时必有一组匹配到 0 个节点，subconverter 不会删空组、而是塞一个 `DIRECT` 占位——面板里就多出一个「选中即直连」的壳组，误点等于全部流量裸奔。用 `.*` 全收则不筛关键字，换机场、机场改节点命名风格都不用动配置。
+
+> `openclash-jichang.ini` 与其余配置一样是**独立的一份**，直接改它即可，没有生成脚本。它的规则段与 `openclash.ini` 内容相同、分组结构与 `jichang-rules.ini` 相同，但三份互不派生：改任一份都不会自动同步到另外两份。所以调整「所有 Clash 配置都该改」的东西（新增规则源、改优先级、换 base 模板）时，记得把同样的改动也过一遍其余同类配置。
 
 填法：OpenClash → 配置订阅 → 添加订阅，地址填订阅转换链接，**弱路由请把远程配置指到 openclash.ini**（不要误用完整版）：
 `.../sub?target=clash&udp=true&url=<订阅>&config=https://raw.githubusercontent.com/utopia0051/my-sub-rules/main/config/openclash.ini`
@@ -168,7 +174,7 @@ OpenClash 是 OpenWrt 上的 mihomo 内核插件。有两份配置可选：
 - AdRules 已登记进 MANIFEST 的"可选镜像"区，首次同步会一并下载备好（防跑路）；主配置 `sub-rules.ini` **不引用**它，不受影响。
 - 维护：`sub-rules-adblock.ini` 是 `sub-rules.ini` 的派生版（唯一区别是多一行 AdRules 引用）；主配置改动后如需同步，让 agent 重新生成即可。
 
-> 🚧 **规则更新护栏（给未来的 agent 和我自己）**：凡是"拦截凶猛 / 误杀率高"的规则（AdRules 这类硬核去广告是典型），**必须经用户明确确认才能加进 `config/` 下的主配置**（sub-rules / basic / shadowrocket / openclash）。日常"更新规则镜像"只是刷新已登记镜像的内容，**绝不允许顺手把这类规则塞进主配置**。它们的正确归宿是独立的 `config/sub-rules-adblock.ini` 或 MANIFEST 的〔需用户确认〕清单。完整清单见 `rules/mirror/MANIFEST.txt` 末尾。
+> 🚧 **规则更新护栏（给未来的 agent 和我自己）**：凡是"拦截凶猛 / 误杀率高"的规则（AdRules 这类硬核去广告是典型），**必须经用户明确确认才能加进 `config/` 下的主配置**（sub-rules / basic / shadowrocket / openclash / openclash-jichang）。日常"更新规则镜像"只是刷新已登记镜像的内容，**绝不允许顺手把这类规则塞进主配置**。它们的正确归宿是独立的 `config/sub-rules-adblock.ini` 或 MANIFEST 的〔需用户确认〕清单。完整清单见 `rules/mirror/MANIFEST.txt` 末尾。
 
 ## 自定义规则维护
 
